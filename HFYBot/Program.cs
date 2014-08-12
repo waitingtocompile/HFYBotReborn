@@ -12,6 +12,7 @@ using RedditSharp.Things;
 
 namespace HFYBot
 {
+    //As the name would suggest, the program itself. At the moment everything is sitting in main, which while bad practisce was quick and easy. Once I start breaking things up into their own threads this would be less of a problem.
     class Program
     {
         public static Reddit redditInstance
@@ -40,12 +41,13 @@ namespace HFYBot
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
-
+            //This is a placeholder for response to existing comments. At present it just prints information on the screen. Ultimately it should be checking the comment's score and deleting if appropriate.
             foreach (Comment comment in user.Comments)
             {
                 Console.WriteLine("{0}      {1}, {2}, {3}", comment.Body, comment.Upvotes, comment.Downvotes, comment.Upvotes - comment.Downvotes);
             }
 
+            //This segment is dedicating to placing the actual comments. It is currently first iteration, so is mostly placeholder, has no checks for if there is already a comment etc.
             foreach (Post post in sub.New.Take(5))
             {
                 if (post.IsSelfPost)
@@ -58,7 +60,7 @@ namespace HFYBot
                     }
                     catch (RateLimitException e)
                     {
-                        
+                        //for the time being this is a bodged solution, Ideally I would be shoving all of this onto it's own thread
                         Console.Write("\nRate limit hit, retrying in {0}... ", e.TimeToReset);
                         System.Threading.Thread.Sleep(e.TimeToReset);
                         Comment com = post.Comment("This is an early development bot. It *should* delete on -1 votes. I'm kind of still working on this bit. Feel free to downvote it anyway.");

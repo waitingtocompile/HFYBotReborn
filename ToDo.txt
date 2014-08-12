@@ -1,0 +1,10 @@
+This file will detail stuff that I am presently aiming to do with this bot:
+
+-Post a comment on any text post that is created on the sub, linking to other text posts by the smae author on that sub
+-Maximum of one comment per post
+-Update old comments with new links
+-Auto delete comments on a score of -1
+
+More distant goals could be:
+-Allow people to subscribe to a particular author and receive a message when that author posts in the sub
+-Leave special notes on posts by certain users.

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace HFYBot
 {
+
+    //This is just a class to hold any methods associated with the console. Most of the code here is less that perfect.
     class ConsoleUtils
     {
         public static string readString(string descriptor, bool showChars)
