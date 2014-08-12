@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Authentication;
 
+using System.Diagnostics;
+
 using RedditSharp;
 using RedditSharp.Things;
 
@@ -36,12 +38,38 @@ namespace HFYBot
             attemptLogin();
             Console.Clear();
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
-            sub = redditInstance.GetSubreddit("/r/MagnusTest");
+            sub = redditInstance.GetSubreddit("/r/Bottest");
 
-            foreach (Post post in sub.New.Take(25))
+
+            foreach (Comment comment in user.Comments)
             {
-                Console.WriteLine("{0}, by {1} with score of {2}", post.Title, post.AuthorName, post.Score.ToString());
+                Console.WriteLine("{0}      {1}, {2}, {3}", comment.Body, comment.Upvotes, comment.Downvotes, comment.Upvotes - comment.Downvotes);
             }
+
+            foreach (Post post in sub.New.Take(5))
+            {
+                if (post.IsSelfPost)
+                {
+                    Console.Write("Self post found, \"{0}\", adding comment...", post.Title);
+                    try
+                    {
+                        Comment com = post.Comment("This is an early development bot. It *should* delete on -1 votes. I'm kind of still working on this bit. Feel free to downvote it anyway.");
+                        Console.WriteLine("  added!");
+                    }
+                    catch (RateLimitException e)
+                    {
+                        
+                        Console.Write("\nRate limit hit, retrying in {0}... ", e.TimeToReset);
+                        System.Threading.Thread.Sleep(e.TimeToReset);
+                        Comment com = post.Comment("This is an early development bot. It *should* delete on -1 votes. I'm kind of still working on this bit. Feel free to downvote it anyway.");
+                        Console.WriteLine("Done!");
+                    }
+                    
+                }
+            }
+
+            
+
             Console.Write("Press Any Key...");
             Console.Read();
             
