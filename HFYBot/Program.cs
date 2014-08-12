@@ -42,25 +42,25 @@ namespace HFYBot
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
             //This is unfinished, it currently only deletes comments of score less than -1, and isn't very good at that anyway.
-            foreach (Comment comment in user.Comments)
-            {
-                if (comment.Upvotes - comment.Downvotes < 0)
-                {
-                    Console.WriteLine("Comment on {0} removed, score less than 0", comment.Author);
-                    comment.Remove();
-                }
-                //Console.WriteLine("{0}      {1}, {2}, {3}", comment.Body, comment.Upvotes, comment.Downvotes, comment.Upvotes - comment.Downvotes);
-            }
+            //foreach (Comment comment in user.Comments)
+            //{
+            //    if (comment.Upvotes - comment.Downvotes < 0)
+            //    {
+            //        //Console.WriteLine("Comment on {0} removed, score less than 0", comment.Author);
+            //        //comment.Remove();
+            //    }
+            //}
 
             //This segment is dedicating to placing the actual comments. It is currently first iteration, so is mostly placeholder, has no checks for if there is already a comment etc.
             foreach (Post post in sub.New.Take(5))
             {
-                if (post.IsSelfPost)
+                if (post.IsSelfPost && post.Comments.Where(com => com.Author == user.Name).Count() < 1)
                 {
                     Console.Write("Self post found, \"{0}\", adding comment...", post.Title);
+                    string commentString = generateComment(post.Author);
                     try
                     {
-                        Comment com = post.Comment("This is an early development bot. It *should* delete on -1 votes. I'm kind of still working on this bit. Feel free to downvote it anyway.");
+                        Comment com = post.Comment(commentString);
                         Console.WriteLine("  added!");
                     }
                     catch (RateLimitException e)
@@ -68,7 +68,7 @@ namespace HFYBot
                         //for the time being this is a bodged solution, Ideally I would be shoving all of this onto it's own thread
                         Console.Write("\nRate limit hit, retrying in {0}... ", e.TimeToReset);
                         System.Threading.Thread.Sleep(e.TimeToReset);
-                        Comment com = post.Comment("This is an early development bot. It *should* delete on -1 votes. I'm kind of still working on this bit. Feel free to downvote it anyway.");
+                        Comment com = post.Comment(commentString);
                         Console.WriteLine("Done!");
                     }
                     
@@ -80,6 +80,30 @@ namespace HFYBot
             Console.Write("Press Any Key...");
             Console.Read();
             
+        }
+
+
+        static string generateComment(RedditUser user)
+        {
+            List<Post> allPosts = user.Posts.ToList();
+            List<Post> relevantPosts = new List<Post>();
+
+            foreach (Post post in allPosts)
+            {
+                if (post.Subreddit == sub.Name && post.IsSelfPost)
+                    relevantPosts.Add(post);
+            }
+
+            if (relevantPosts.Count <= 1)
+            {
+                return "[" + user.Name + "](" + user.Shortlink + ") has not yet posted any other stories";
+            }
+            else
+            {
+                string comment = "Other stories by [" + user.Name + "](" + user.Shortlink + "):\n";
+
+                return comment;
+            }
         }
 
         static void attemptLogin()
