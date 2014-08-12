@@ -41,10 +41,15 @@ namespace HFYBot
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
-            //This is a placeholder for response to existing comments. At present it just prints information on the screen. Ultimately it should be checking the comment's score and deleting if appropriate.
+            //This is unfinished, it currently only deletes comments of score less than -1, and isn't very good at that anyway.
             foreach (Comment comment in user.Comments)
             {
-                Console.WriteLine("{0}      {1}, {2}, {3}", comment.Body, comment.Upvotes, comment.Downvotes, comment.Upvotes - comment.Downvotes);
+                if (comment.Upvotes - comment.Downvotes < 0)
+                {
+                    Console.WriteLine("Comment on {0} removed, score less than 0", comment.Author);
+                    comment.Remove();
+                }
+                //Console.WriteLine("{0}      {1}, {2}, {3}", comment.Body, comment.Upvotes, comment.Downvotes, comment.Upvotes - comment.Downvotes);
             }
 
             //This segment is dedicating to placing the actual comments. It is currently first iteration, so is mostly placeholder, has no checks for if there is already a comment etc.
