@@ -42,7 +42,7 @@ namespace HFYBot
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
             CommentPoster.MakeCommentPass();
-            CommentEditor.MakeEditPass();
+            CommentEditor.MakePendingEditPass();
 
             Console.Write("Press Any Key...");
             Console.Read();

@@ -12,20 +12,24 @@ namespace HFYBot
 {
     class CommentEditor
     {
-        public static List<RedditUser> pendingUsers = new List<RedditUser>()
+        public static List<RedditUser> pendingUsers = new List<RedditUser>(0);
 
-        public static void MakeEditPass()
+        //Iterates through comments on posts by users who are marked as pending, low stress so can be called frequently
+        public static void MakePendingEditPass()
+        {
+            lock(pendingUsers){
+                foreach (RedditUser user in pendingUsers)
+                {
+                    //TODO: actual iteration code
+                }
+                pendingUsers.Clear();
+            }
+        }
+
+        //Iterates through ALL comments, will take a long time and should be used sparingly (i.e on startup or once every x hours)
+        public static void MakeGeneralEditPass()
         {
 
-            //This is unfinished, it currently only deletes comments of score less than -1, and isn't very good at that anyway.
-            //foreach (Comment comment in user.Comments)
-            //{
-            //    if (comment.Upvotes - comment.Downvotes < 0)
-            //    {
-            //        //Console.WriteLine("Comment on {0} removed, score less than 0", comment.Author);
-            //        //comment.Remove();
-            //    }
-            //}
         }
     }
 }

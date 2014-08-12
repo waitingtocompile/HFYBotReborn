@@ -11,13 +11,16 @@ namespace HFYBot
 {
     class CommentPoster
     {
+
+        //pulls a predefined number (currently 5) from the subreddit and posts comments on self posts
         public static void MakeCommentPass()
         {
             foreach (Post post in Program.sub.New.Take(5))
             {
+                
                 if (post.IsSelfPost && post.Comments.Where(com => com.Author == Program.user.Name).Count() < 1)
                 {
-                    Console.Write("Self post found, \"{0}\", adding comment.. .", post.Title);
+                    Console.Write("Self post found, \"{0}\", adding comment... ", post.Title);
                     string commentString = generateComment(post);
                     try
                     {
@@ -41,18 +44,23 @@ namespace HFYBot
 
         static string generateComment(Post originPost)
         {
+            lock (CommentEditor.pendingUsers)
+            {
+                CommentEditor.pendingUsers.Add(originPost.Author);
+            }
+
             List<Post> allPosts = originPost.Author.Posts.ToList();
             List<Post> relevantPosts = new List<Post>(0);
 
             foreach (Post post in allPosts)
             {
-                if (post.Subreddit == sub.Name && post.IsSelfPost)
+                if (post.Subreddit == Program.sub.Name && post.IsSelfPost)
                     relevantPosts.Add(post);
             }
 
             if (relevantPosts.Count <= 1)
             {
-                return "[u/" + originPost.Author.Name + "](www.reddit.com/u/" + originPost.Author.Name + ") has not yet posted any other stories";
+                return "[u/" + originPost.Author.Name + "](http://reddit.com/u/" + originPost.Author.Name + ") has not yet posted any other stories";
             }
             else
             {
