@@ -41,41 +41,8 @@ namespace HFYBot
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
-            //This is unfinished, it currently only deletes comments of score less than -1, and isn't very good at that anyway.
-            //foreach (Comment comment in user.Comments)
-            //{
-            //    if (comment.Upvotes - comment.Downvotes < 0)
-            //    {
-            //        //Console.WriteLine("Comment on {0} removed, score less than 0", comment.Author);
-            //        //comment.Remove();
-            //    }
-            //}
-
-            //This segment is dedicating to placing the actual comments. It is currently first iteration, so is mostly placeholder, has no checks for if there is already a comment etc.
-            foreach (Post post in sub.New.Take(5))
-            {
-                if (post.IsSelfPost && post.Comments.Where(com => com.Author == user.Name).Count() < 1)
-                {
-                    Console.Write("Self post found, \"{0}\", adding comment...", post.Title);
-                    string commentString = generateComment(post);
-                    try
-                    {
-                        Comment com = post.Comment(commentString);
-                        Console.WriteLine("  added!");
-                    }
-                    catch (RateLimitException e)
-                    {
-                        //for the time being this is a bodged solution, Ideally I would be shoving all of this onto it's own thread
-                        Console.Write("\nRate limit hit, retrying in {0}... ", e.TimeToReset);
-                        System.Threading.Thread.Sleep(e.TimeToReset);
-                        Comment com = post.Comment(commentString);
-                        Console.WriteLine("Done!");
-                    }
-                    
-                }
-            }
-
-            
+            CommentPoster.MakeCommentPass();
+            CommentEditor.MakeEditPass();
 
             Console.Write("Press Any Key...");
             Console.Read();
@@ -83,32 +50,7 @@ namespace HFYBot
         }
 
 
-        static string generateComment(Post originPost)
-        {
-            List<Post> allPosts = originPost.Author.Posts.ToList();
-            List<Post> relevantPosts = new List<Post>(0);
-
-            foreach (Post post in allPosts)
-            {
-                if (post.Subreddit == sub.Name && post.IsSelfPost)
-                    relevantPosts.Add(post);
-            }
-
-            if (relevantPosts.Count <= 1)
-            {
-                return "[u/" + originPost.Author.Name + "](www.reddit.com/u/" + originPost.Author.Name + ") has not yet posted any other stories";
-            }
-            else
-            {
-                string comment = "There are " + relevantPosts.Count.ToString() + " stories by [u/" + originPost.Author.Name + "](http://reddit.com/u/" + originPost.Author.Name + ") including:\n\n---------\n\n";
-                for (int i = 0; i < relevantPosts.Count && i < 20; i++)
-                {
-                    if (relevantPosts[i] != originPost)
-                        comment += "\n\n* [" + relevantPosts[i].Title + "](" + relevantPosts[i].Url + ")";
-                }
-                return comment;
-            }
-        }
+        
 
         static void attemptLogin()
         {
