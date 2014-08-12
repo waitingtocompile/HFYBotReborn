@@ -57,7 +57,7 @@ namespace HFYBot
                 if (post.IsSelfPost && post.Comments.Where(com => com.Author == user.Name).Count() < 1)
                 {
                     Console.Write("Self post found, \"{0}\", adding comment...", post.Title);
-                    string commentString = generateComment(post.Author);
+                    string commentString = generateComment(post);
                     try
                     {
                         Comment com = post.Comment(commentString);
@@ -83,10 +83,10 @@ namespace HFYBot
         }
 
 
-        static string generateComment(RedditUser user)
+        static string generateComment(Post originPost)
         {
-            List<Post> allPosts = user.Posts.ToList();
-            List<Post> relevantPosts = new List<Post>();
+            List<Post> allPosts = originPost.Author.Posts.ToList();
+            List<Post> relevantPosts = new List<Post>(0);
 
             foreach (Post post in allPosts)
             {
@@ -96,12 +96,16 @@ namespace HFYBot
 
             if (relevantPosts.Count <= 1)
             {
-                return "[" + user.Name + "](" + user.Shortlink + ") has not yet posted any other stories";
+                return "[u/" + originPost.Author.Name + "](www.reddit.com/u/" + originPost.Author.Name + ") has not yet posted any other stories";
             }
             else
             {
-                string comment = "Other stories by [" + user.Name + "](" + user.Shortlink + "):\n";
-
+                string comment = "There are " + relevantPosts.Count.ToString() + " stories by [u/" + originPost.Author.Name + "](http://reddit.com/u/" + originPost.Author.Name + ") including:\n\n---------\n\n";
+                for (int i = 0; i < relevantPosts.Count && i < 20; i++)
+                {
+                    if (relevantPosts[i] != originPost)
+                        comment += "\n\n* [" + relevantPosts[i].Title + "](" + relevantPosts[i].Url + ")";
+                }
                 return comment;
             }
         }
