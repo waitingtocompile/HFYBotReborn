@@ -17,7 +17,7 @@ namespace HFYBot
     class Program
     {
 
-        public const string version = "Stable 1.0";
+        public const string version = "Release 1.0";
 
         public static string footer
         {
@@ -58,9 +58,7 @@ namespace HFYBot
             attemptLogin();
             Console.Clear();
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
-            sub = redditInstance.GetSubreddit("/r/Bottest");
-
-            CommentEditor.pendingUsers.Add(redditInstance.GetUser("KaiserMagnus"));
+            sub = redditInstance.GetSubreddit("/r/BHFY");
 
             editThread = new Thread(new ThreadStart(CommentEditor.Run));
             postThread = new Thread(new ThreadStart(CommentPoster.Run));
