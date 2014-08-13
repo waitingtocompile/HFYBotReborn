@@ -17,7 +17,7 @@ namespace HFYBot
     class Program
     {
 
-        public const string version = "Release 1.0";
+        public const string version = "Release 1.1";
 
         public static string footer
         {

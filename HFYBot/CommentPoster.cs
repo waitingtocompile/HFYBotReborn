@@ -21,7 +21,7 @@ namespace HFYBot
             foreach (Post post in Program.sub.New.Take(10))
             {
                 
-                if (post.IsSelfPost && post.Comments.Where(com => com.Author == Program.user.Name).Count() < 1)
+                if (post.IsSelfPost && post.Comments.Where(com => com.Author == Program.user.Name).Count() < 1 && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"))
                 {
                     Console.Write("Self post found, \"{0}\", adding comment... ", post.Title);
                     string commentString = generateComment(post);
@@ -58,7 +58,7 @@ namespace HFYBot
 
             foreach (Post post in allPosts)
             {
-                if (post.Subreddit == Program.sub.Name && post.IsSelfPost)
+                if (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"))
                     relevantPosts.Add(post);
             }
 
