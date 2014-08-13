@@ -42,7 +42,7 @@ namespace HFYBot
 
 
 
-        static string generateComment(Post originPost)
+        public static string generateComment(Post originPost)
         {
             lock (CommentEditor.pendingUsers)
             {
@@ -60,7 +60,9 @@ namespace HFYBot
 
             if (relevantPosts.Count <= 1)
             {
-                return "[u/" + originPost.Author.Name + "](http://reddit.com/u/" + originPost.Author.Name + ") has not yet posted any other stories";
+                return "[u/" + originPost.Author.Name + "](http://reddit.com/u/"
+                    + originPost.Author.Name
+                    + ") has not yet posted any other stories\n\n---\n\n" + Program.footer;
             }
             else
             {
@@ -70,6 +72,7 @@ namespace HFYBot
                     if (relevantPosts[i] != originPost)
                         comment += "\n\n* [" + relevantPosts[i].Title + "](" + relevantPosts[i].Url + ")";
                 }
+                comment += "\n\n---\n\n" + Program.footer;
                 return comment;
             }
         }
