@@ -3,7 +3,8 @@
 
 # RedditSharp libraries
 RedditSharp.dll
-
+HtmlAgilityPack.dll
+Newtonsoft.Json.dll
 
 # User-specific files
 *.suo
