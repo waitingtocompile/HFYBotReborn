@@ -15,10 +15,10 @@ namespace HFYBot
         public static readonly TimeSpan postFrequency = new TimeSpan(0, 30, 0);
 
 
-        //pulls a predefined number (currently 5) from the subreddit and posts comments on self posts
+        //pulls a predefined number (currently 10) from the subreddit and posts comments on self posts
         public static void MakeCommentPass()
         {
-            foreach (Post post in Program.sub.New.Take(5))
+            foreach (Post post in Program.sub.New.Take(10))
             {
                 
                 if (post.IsSelfPost && post.Comments.Where(com => com.Author == Program.user.Name).Count() < 1)
