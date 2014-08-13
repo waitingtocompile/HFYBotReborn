@@ -35,6 +35,10 @@ namespace HFYBot
                         Comment com = post.Comment(commentString);
                         Console.WriteLine("Done!");
                     }
+                    lock (CommentEditor.pendingUsers)
+                    {
+                        CommentEditor.pendingUsers.Add(post.Author);
+                    }
 
                 }
             }
@@ -44,10 +48,7 @@ namespace HFYBot
 
         public static string generateComment(Post originPost)
         {
-            lock (CommentEditor.pendingUsers)
-            {
-                CommentEditor.pendingUsers.Add(originPost.Author);
-            }
+            
 
             List<Post> allPosts = originPost.Author.Posts.ToList();
             List<Post> relevantPosts = new List<Post>(0);

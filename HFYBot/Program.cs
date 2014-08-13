@@ -56,7 +56,7 @@ namespace HFYBot
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
-            CommentEditor.MakeGeneralEditPass();
+            CommentEditor.pendingUsers.Add(redditInstance.GetUser("KaiserMagnus"));
             CommentPoster.MakeCommentPass();
             CommentEditor.MakePendingEditPass();
 
