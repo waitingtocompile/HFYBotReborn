@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Authentication;
 
@@ -16,7 +17,7 @@ namespace HFYBot
     class Program
     {
 
-        public const string version = "beta 0.2";
+        public const string version = "Stable 1.0";
 
         public static string footer
         {
@@ -46,6 +47,9 @@ namespace HFYBot
             get;
         }
 
+        static Thread editThread;
+        static Thread postThread;
+
 
         static void Main(string[] args)
         {
@@ -57,11 +61,15 @@ namespace HFYBot
             sub = redditInstance.GetSubreddit("/r/Bottest");
 
             CommentEditor.pendingUsers.Add(redditInstance.GetUser("KaiserMagnus"));
-            CommentPoster.MakeCommentPass();
-            CommentEditor.MakePendingEditPass();
 
-            Console.Write("Press Any Key...");
-            Console.Read();
+            editThread = new Thread(new ThreadStart(CommentEditor.Run));
+            postThread = new Thread(new ThreadStart(CommentPoster.Run));
+
+            postThread.Start();
+            editThread.Start();
+
+            //Console.Write("Press Any Key...");
+            //Console.Read();
             
         }
 

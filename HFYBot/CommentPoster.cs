@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using RedditSharp;
@@ -11,6 +12,8 @@ namespace HFYBot
 {
     class CommentPoster
     {
+        public static readonly TimeSpan postFrequency = new TimeSpan(0, 30, 0);
+
 
         //pulls a predefined number (currently 5) from the subreddit and posts comments on self posts
         public static void MakeCommentPass()
@@ -75,6 +78,18 @@ namespace HFYBot
                 }
                 comment += "\n\n---\n\n" + Program.footer;
                 return comment;
+            }
+        }
+
+
+        public static void Run()
+        {
+            for (; ; )
+            {
+                Console.WriteLine("Beginning Comment posing pass at " + DateTime.Now.ToString("HH:mm:ss"));
+                MakeCommentPass();
+                Console.WriteLine("Comment Pass completed at " + DateTime.Now.ToString("HH:mm:ss"));
+                Thread.Sleep(postFrequency);
             }
         }
     }

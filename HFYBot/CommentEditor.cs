@@ -12,6 +12,9 @@ namespace HFYBot
 {
     class CommentEditor
     {
+        public static readonly TimeSpan editFrequency = new TimeSpan(0, 30, 0);
+
+
         public static List<RedditUser> pendingUsers = new List<RedditUser>(0);
 
         //Iterates through comments on posts by users who are marked as pending, low stress so can be called (relitaively) frequently
@@ -49,6 +52,19 @@ namespace HFYBot
             foreach (Comment comment in Program.user.Comments)
             {
                 //comment.EditText(CommentPoster.generateComment(comment.));
+            }
+        }
+
+
+        public static void Run()
+        {
+            Thread.Sleep(new TimeSpan(0, 10, 0));
+            for (; ; )
+            {
+                Console.WriteLine("Beginning Comment edit pass at " + DateTime.Now.ToString("HH:mm:ss"));
+                MakePendingEditPass();
+                Console.WriteLine("Comment edit pass completed at " + DateTime.Now.ToString("HH:mm:ss"));
+                Thread.Sleep(editFrequency);
             }
         }
     }
