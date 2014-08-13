@@ -58,7 +58,7 @@ namespace HFYBot
             attemptLogin();
             Console.Clear();
             Console.WriteLine("Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
-            sub = redditInstance.GetSubreddit("/r/BHFY");
+            sub = redditInstance.GetSubreddit("/r/HFY");
 
             editThread = new Thread(new ThreadStart(CommentEditor.Run));
             postThread = new Thread(new ThreadStart(CommentPoster.Run));
