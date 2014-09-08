@@ -61,9 +61,9 @@ namespace HFYBot
             Thread.Sleep(new TimeSpan(0, 10, 0));
             for (; ; )
             {
-                Console.WriteLine("Beginning Comment edit pass at " + DateTime.Now.ToString("HH:mm:ss"));
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning Comment edit pass");
                 MakePendingEditPass();
-                Console.WriteLine("Comment edit pass completed at " + DateTime.Now.ToString("HH:mm:ss"));
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment edit pass completed");
                 Thread.Sleep(editFrequency);
             }
         }

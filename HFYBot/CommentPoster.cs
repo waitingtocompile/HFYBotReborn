@@ -86,9 +86,9 @@ namespace HFYBot
         {
             for (; ; )
             {
-                Console.WriteLine("Beginning Comment posing pass at " + DateTime.Now.ToString("HH:mm:ss"));
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning comment posting pass");
                 MakeCommentPass();
-                Console.WriteLine("Comment Pass completed at " + DateTime.Now.ToString("HH:mm:ss"));
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed");
                 Thread.Sleep(postFrequency);
             }
         }

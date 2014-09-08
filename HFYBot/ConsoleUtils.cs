@@ -10,6 +10,15 @@ namespace HFYBot
     //This is just a class to hold any methods associated with the console. Most of the code here is less that perfect.
     class ConsoleUtils
     {
+        public static string TimeStamp
+        {
+            get
+            {
+                return "[" + DateTime.Now.ToString("HH:mm:ss") + "]";
+            }
+        }
+
+
         public static string readString(string descriptor, bool showChars)
         {
             Console.Write("\n" + descriptor + ": ");
