@@ -14,17 +14,17 @@ namespace HFYBot
     class CommentPoster
     {
         //The delay between each posting pass
-        public static readonly TimeSpan postFrequency = new TimeSpan(0, 30, 0);
+        static readonly TimeSpan postFrequency = new TimeSpan(0, 30, 0);
 
 
         //pulls a predefined number (currently 10) from the subreddit and posts comments on self posts
-        public static void MakeCommentPass()
+        static void MakeCommentPass()
         {
             //I know, the number to pull is hardcoded. I should fix that at some point. Or you could, this project is open source after all (hint hint)
             foreach (Post post in Program.sub.New.Take(10))
             {
                 
-                if (post.IsSelfPost && post.Comments.Where(com => com.Author == Program.user.Name).Count() < 1 && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"))
+                if (checkPostElegibility(post))
                 {
                     Console.Write("Self post found, \"{0}\", adding comment... ", post.Title);
                     string commentString = generateComment(post);
@@ -41,15 +41,38 @@ namespace HFYBot
                         Console.WriteLine("Done!");
                     }
 
-                    CommentEditor.pendingUsers.Add(post.Author);
+                    makeMassEdit(post.Author, commentString);
 
                 }
             }
         }
 
+        static void makeMassEdit(RedditUser user, string commentString)
+        {
+            List<Post> allPosts = user.Posts.ToList();
+
+            foreach (Post post in allPosts)
+            {
+                if (checkPostElegibility(post))
+                {
+                    foreach (Comment comment in post.Comments)
+                    {
+                        if (comment.Author == Program.user.Name)
+                        {
+                            comment.EditText(CommentPoster.generateComment(post));
+                        }
+                    }
+                }
+            }
+        }
+
+        static bool checkPostElegibility(Post post)
+        {
+            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"));
+        }
 
         //Generates actual text for comments. It will never list more than 20 links, otherwise it would hit the character limit on /u/battletoad's posts. This method is also used by the CommentEditor to avoid code duplication.
-        public static string generateComment(Post originPost)
+        static string generateComment(Post originPost)
         {
             List<Post> allPosts = originPost.Author.Posts.ToList();
             List<Post> relevantPosts = new List<Post>(0);
@@ -88,14 +111,8 @@ namespace HFYBot
                 MakeCommentPass();
                 Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed");
 
-                Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning Comment edit pass");
-                CommentEditor.MakePendingEditPass();
-                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment edit pass completed");
-
                 Thread.Sleep(postFrequency);
             }
         }
     }
-
-
 }
