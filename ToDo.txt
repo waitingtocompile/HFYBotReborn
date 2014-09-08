@@ -1,10 +1,16 @@
-This file will detail stuff that I am presently aiming to do with this bot:
+CURRENT CAPABILITIES:
+- Posting comments on OC linking to other OC
+- Editing older comments to point to new OC
+- Not be too hard on the reddit API (I think)
 
--Post a comment on any text post that is created on the sub, linking to other text posts by the smae author on that sub
--Maximum of one comment per post
--Update old comments with new links
--Auto delete comments on a score of -1
+PLANNED CAPABILITIES:
+- Allow users to subscribe to a certain author and be messaged when they post
+- Allow users to subscribe to a certain series (as determined by using title) and be messaged when a new part is uploaded
+- Leave special notes on certain posts, as determined in an external file (this would be reserved for particularly well known writers and series)
+- A second comment linking only to other posts in the same series. While a series will be determined based upon the title, I have no idea how to determine what is or isn't a series (yet)
+- Some sort of reference to pancakes
 
-More distant goals could be:
--Allow people to subscribe to a particular author and receive a message when that author posts in the sub
--Leave special notes on posts by certain users.
+THINGS THAT WILL NOT BE COMING (yet):
+- deleting of downvoted comments (not yet been needed, but the API seems to have trouble with deleting posts)
+- Sentience (I have read one too may rouge AI sci-fi)
+- Automated OC creation (see sentience)
