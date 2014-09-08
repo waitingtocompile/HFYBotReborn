@@ -48,8 +48,7 @@ namespace HFYBot
             get;
         }
 
-        //Pair of threads, I will merge these in one or two commits time. All things aside from the login are done on these threads
-        static Thread editThread;
+        //A seperate thread for the bot's main funtionality so that the interface does not simple seize up. Also allows me to add new features that are completely independent more easily.
         static Thread postThread;
 
         //Fairly unremarkable main method. Deals with the login process then starts the two threads and lets them do the rest.
@@ -62,11 +61,9 @@ namespace HFYBot
             Console.WriteLine(ConsoleUtils.TimeStamp + " Login sucsessful, user has " + user.UnreadMessages.Count().ToString() + " unread messages");
             sub = redditInstance.GetSubreddit("/r/HFY");
 
-            editThread = new Thread(new ThreadStart(CommentEditor.Run));
             postThread = new Thread(new ThreadStart(CommentPoster.Run));
 
             postThread.Start();
-            editThread.Start();
             
         }
 

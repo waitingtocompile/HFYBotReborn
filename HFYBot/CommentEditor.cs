@@ -22,43 +22,28 @@ namespace HFYBot
         //Iterates through comments on posts by users who are marked as pending.
         public static void MakePendingEditPass()
         {
-            lock(pendingUsers){
-                foreach (RedditUser user in pendingUsers)
+            foreach (RedditUser user in pendingUsers)
+            {
+                List<Post> allPosts = user.Posts.ToList();
+                List<Post> relevantPosts = new List<Post>();
+                foreach (Post post in allPosts)
                 {
-                    List<Post> allPosts = user.Posts.ToList();
-                    List<Post> relevantPosts = new List<Post>();
-                    foreach (Post post in allPosts)
-                    {
-                        if (post.Subreddit == Program.sub.Name && post.IsSelfPost)
-                            relevantPosts.Add(post);
-                    }
+                    if (post.Subreddit == Program.sub.Name && post.IsSelfPost)
+                        relevantPosts.Add(post);
+                }
 
-                    foreach (Post post in relevantPosts)
+                foreach (Post post in relevantPosts)
+                {
+                    foreach (Comment comment in post.Comments)
                     {
-                        foreach (Comment comment in post.Comments)
+                        if (comment.Author == Program.user.Name)
                         {
-                            if (comment.Author == Program.user.Name)
-                            {
-                                comment.EditText(CommentPoster.generateComment(post));
-                            }
+                            comment.EditText(CommentPoster.generateComment(post));
                         }
                     }
                 }
-                pendingUsers.Clear();
             }
-        }
-
-        //This is the method called by the thread. It will run until the end of time. Or until the program is closed, on of the two.
-        public static void Run()
-        {
-            Thread.Sleep(new TimeSpan(0, 10, 0));
-            for (; ; )
-            {
-                Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning Comment edit pass");
-                MakePendingEditPass();
-                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment edit pass completed");
-                Thread.Sleep(editFrequency);
-            }
+            pendingUsers.Clear();
         }
     }
 }

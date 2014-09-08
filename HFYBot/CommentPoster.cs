@@ -40,10 +40,8 @@ namespace HFYBot
                         Comment com = post.Comment(commentString);
                         Console.WriteLine("Done!");
                     }
-                    lock (CommentEditor.pendingUsers)
-                    {
-                        CommentEditor.pendingUsers.Add(post.Author);
-                    }
+
+                    CommentEditor.pendingUsers.Add(post.Author);
 
                 }
             }
@@ -53,8 +51,6 @@ namespace HFYBot
         //Generates actual text for comments. It will never list more than 20 links, otherwise it would hit the character limit on /u/battletoad's posts. This method is also used by the CommentEditor to avoid code duplication.
         public static string generateComment(Post originPost)
         {
-            
-
             List<Post> allPosts = originPost.Author.Posts.ToList();
             List<Post> relevantPosts = new List<Post>(0);
 
@@ -91,6 +87,11 @@ namespace HFYBot
                 Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning comment posting pass");
                 MakeCommentPass();
                 Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed");
+
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning Comment edit pass");
+                CommentEditor.MakePendingEditPass();
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment edit pass completed");
+
                 Thread.Sleep(postFrequency);
             }
         }
