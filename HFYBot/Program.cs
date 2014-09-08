@@ -13,12 +13,13 @@ using RedditSharp.Things;
 
 namespace HFYBot
 {
-    //As the name would suggest, the program itself. At the moment everything is sitting in main, which while bad practisce was quick and easy. Once I start breaking things up into their own threads this would be less of a problem.
+    //As the name would suggest, the program itself. Simply holds the main method and a handful of general values.
     class Program
     {
-
+        //The version number to be shown in the footer
         public const string version = "Release 1.1";
 
+        //Shown at the bottom oof each comment below a horizontal line to provide information about the bot.
         public static string footer
         {
             get
@@ -30,7 +31,7 @@ namespace HFYBot
             }
         }
 
-
+        
         public static Reddit redditInstance
         {
             private set;
@@ -47,10 +48,11 @@ namespace HFYBot
             get;
         }
 
+        //Pair of threads, I will merge these in one or two commits time. All things aside from the login are done on these threads
         static Thread editThread;
         static Thread postThread;
 
-
+        //Fairly unremarkable main method. Deals with the login process then starts the two threads and lets them do the rest.
         static void Main(string[] args)
         {
             Console.WriteLine("Please input Reddit credentials (don't worry, I won't steal them)");
@@ -65,15 +67,12 @@ namespace HFYBot
 
             postThread.Start();
             editThread.Start();
-
-            //Console.Write("Press Any Key...");
-            //Console.Read();
             
         }
 
 
         
-
+        //Resposible for actually logging in. If sucsessfull it will allow the program to proceeed, if not it re prompts. This is probably not a good way to do things.
         static void attemptLogin()
         {
             try

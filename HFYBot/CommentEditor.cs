@@ -10,14 +10,16 @@ using RedditSharp.Things;
 
 namespace HFYBot
 {
+    //Responsible for editing older posts when the author has posted something new.
     class CommentEditor
     {
+        //The delay between each editing pass
         public static readonly TimeSpan editFrequency = new TimeSpan(0, 30, 0);
 
-
+        //The list of pending users, because everyone likes generic lists.
         public static List<RedditUser> pendingUsers = new List<RedditUser>(0);
 
-        //Iterates through comments on posts by users who are marked as pending, low stress so can be called (relitaively) frequently
+        //Iterates through comments on posts by users who are marked as pending.
         public static void MakePendingEditPass()
         {
             lock(pendingUsers){
@@ -46,16 +48,7 @@ namespace HFYBot
             }
         }
 
-        //Iterates through ALL comments, will take a long time and should be used sparingly (i.e on startup or once every x hours) currently disabled.
-        public static void MakeGeneralEditPass()
-        {
-            foreach (Comment comment in Program.user.Comments)
-            {
-                //comment.EditText(CommentPoster.generateComment(comment.));
-            }
-        }
-
-
+        //This is the method called by the thread. It will run until the end of time. Or until the program is closed, on of the two.
         public static void Run()
         {
             Thread.Sleep(new TimeSpan(0, 10, 0));

@@ -10,6 +10,7 @@ namespace HFYBot
     //This is just a class to hold any methods associated with the console. Most of the code here is less that perfect.
     class ConsoleUtils
     {
+        //Gives a nice looking timestamp to go at the start of lines
         public static string TimeStamp
         {
             get
@@ -18,7 +19,7 @@ namespace HFYBot
             }
         }
 
-
+        //A nice method of reading test input from the console. If showChars is false it will show asterisks in place of the actual text (good for passwords)
         public static string readString(string descriptor, bool showChars)
         {
             Console.Write("\n" + descriptor + ": ");

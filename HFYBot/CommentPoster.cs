@@ -10,14 +10,17 @@ using RedditSharp.Things;
 
 namespace HFYBot
 {
+    //Responsible for posting of new comments on OC. All editing is left to the comment editor.
     class CommentPoster
     {
+        //The delay between each posting pass
         public static readonly TimeSpan postFrequency = new TimeSpan(0, 30, 0);
 
 
         //pulls a predefined number (currently 10) from the subreddit and posts comments on self posts
         public static void MakeCommentPass()
         {
+            //I know, the number to pull is hardcoded. I should fix that at some point. Or you could, this project is open source after all (hint hint)
             foreach (Post post in Program.sub.New.Take(10))
             {
                 
@@ -32,7 +35,6 @@ namespace HFYBot
                     }
                     catch (RateLimitException e)
                     {
-                        //for the time being this is a bodged solution, Ideally I would be shoving all of this onto it's own thread
                         Console.Write("\nRate limit hit, retrying in {0}... ", e.TimeToReset);
                         System.Threading.Thread.Sleep(e.TimeToReset);
                         Comment com = post.Comment(commentString);
@@ -48,7 +50,7 @@ namespace HFYBot
         }
 
 
-
+        //Generates actual text for comments. It will never list more than 20 links, otherwise it would hit the character limit on /u/battletoad's posts. This method is also used by the CommentEditor to avoid code duplication.
         public static string generateComment(Post originPost)
         {
             
@@ -81,7 +83,7 @@ namespace HFYBot
             }
         }
 
-
+        //This is the method called by the thread. It will run until the end of time. Or until the program is closed, on of the two.
         public static void Run()
         {
             for (; ; )
