@@ -102,7 +102,7 @@ namespace HFYBot
             }
         }
 
-        //This is the method called by the thread. It will run until the end of time. Or until the program is closed, on of the two.
+        //This is the method called by the thread. It will run until the end of time. Or until the program is closed, one of the two.
         public static void Run()
         {
             for (; ; )
