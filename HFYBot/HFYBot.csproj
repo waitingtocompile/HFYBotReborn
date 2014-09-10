@@ -7,8 +7,8 @@
     <ProjectGuid>{D98D2501-9C23-4CD6-8494-005485031C55}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Reddit_Bots</RootNamespace>
-    <AssemblyName>Reddit Bots</AssemblyName>
+    <RootNamespace>HFYBot</RootNamespace>
+    <AssemblyName>HFYBotReborn</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,6 +30,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>HFYBot.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack">
@@ -53,8 +56,10 @@
   <ItemGroup>
     <Compile Include="CommentPoster.cs" />
     <Compile Include="ConsoleUtils.cs" />
+    <Compile Include="InboxManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subscriptions\SubscribedAuthor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
