@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Authentication;
+using System.Xml;
 
 using System.Diagnostics;
 
@@ -84,4 +85,74 @@ namespace HFYBot
             }
         }
     }
+
+    public class Settings
+    {
+        public static readonly string settingsFile = "settings.xml";
+
+        static XmlDocument doc = new XmlDocument();
+
+        public static string defaultSubreddit
+        {
+            public get;
+            private set;
+        }
+        public static string testSubreddit
+        {
+            public get;
+            private set;
+        }
+        public static bool testMode
+        {
+            public get;
+            private set;
+        }
+
+        public static string subreddit
+        {
+            get
+            {
+                if (testMode) return testSubreddit;
+                else return defaultSubreddit;
+            }
+        }
+
+        public static void loadSettingsFile()
+        {
+            doc.LoadXml(settingsFile);
+
+            if (!System.IO.File.Exists(settingsFile))
+            {
+                createSettingsFile();
+            }
+            else
+            {
+                defaultSubreddit = doc.SelectSingleNode("/Settings/DefaultSubreddit").InnerText;
+                testSubreddit = doc.SelectSingleNode("/Settings/TestSubreddit").InnerText;
+                Boolean.TryParse(doc.SelectSingleNode("Settings/TestingMode").InnerText, out testMode);
+            }
+        }
+
+        static void createSettingsFile()
+        {
+            System.IO.File.Create(settingsFile);
+            XmlWriterSettings set = new XmlWriterSettings();
+            XmlWriter writer = XmlWriter.Create(settingsFile, set);
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Settings");
+            writer.WriteElementString("DefaultSubreddit", "/r/HFY");
+            writer.WriteElementString("TestSubreddit", "r/BotTest");
+            writer.WriteElementString("TestingMode", "false");
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Flush();
+            writer.Close();
+
+            defaultSubreddit = "/r/HFY";
+            testSubreddit = "/r/Bottest";
+            testMode = false;
+        }
+    }
 }
+
+
