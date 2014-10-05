@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
+using RedditSharp.Things;
+using System.Diagnostics;
+
 namespace HFYBot.Subscriptions
 {
     //Deals with users directly asking the bot to do things. I know right, so needy!
@@ -20,7 +23,74 @@ namespace HFYBot.Subscriptions
         //Checks the bot's inbox for new mail/comments.
         public static void checkInbox()
         {
-            
+            if (Program.user.HasMail)
+            {
+                foreach (PrivateMessage message in Program.user.UnreadMessages)
+                {
+                    string content = message.Subject;
+                    if(content.Substring(0, 6).Equals("HFYBot", StringComparison.InvariantCultureIgnoreCase)){
+                        //string content = message.Subject;
+                        string[] tokens = content.Split(' ');
+                        for (int i = 0; i < tokens.Length; i++)
+                            tokens[i] = tokens[i].ToLowerInvariant();
+
+                        switch (tokens[1])
+                        {
+                            case("subscribe"):
+                                if (Program.redditInstance.GetUser(tokens[2]) != null)
+                                {
+                                    addSubscriber(tokens[2], message.Author);
+                                    message.Reply("Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See here(beta is beta) for more options.");
+                                    //ayy llamo
+                                }
+                                else
+                                {
+                                    message.Reply("I can't find a user by that name. Did you do something wrong?");
+                                }
+                                break;
+                                
+                            case("checksubscriptions"):
+                                List<String> authors = checkSubscriptions(message.Author);
+                                if (authors.Count == 0)
+                                    message.Reply("You aren't subscribed to anyone!");
+                                else
+                                {
+                                    string reply = "You are subscribed to:";
+                                    foreach (string s in authors)
+                                        reply += "/n/n" + s;
+                                }
+                                break;
+
+                            case("checksubscribers"):
+                                List<String> subs = checkSubscribers(message.Author);
+                                if (subs.Count == 0)
+                                    message.Reply("You aren't subscribed to anyone!");
+                                else
+                                {
+                                    string reply = "You are subscribed to:";
+                                    foreach (string s in subs)
+                                        reply += "/n/n" + s;
+                                }
+                                break;
+
+                            case("unsubscribe"):
+                                try{
+                                    if (removeSubscriber(tokens[2], message.Author))
+                                        message.Reply("Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See here(TODO) for more options.");
+                                        else message.Reply("You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:/n/n    HFYBot checkSubscriptions");
+                                } catch (IndexOutOfRangeException e){
+                                    message.Reply("I can't unsubscibe you unless you tell me who.");
+                                }
+                                
+                                break;
+
+                            default:
+                                message.Reply("My automated systems have no reponse to that. There is a list here (LOLNOPE, beta is beta)");
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         public static void loadSubscriptionsFromFile()
@@ -67,6 +137,16 @@ namespace HFYBot.Subscriptions
             newNode.SetAttribute("name", authorName);
             listingNode.AppendChild((XmlNode)newNode);
             return (XmlNode)newNode;
+        }
+
+        static void optimiseFile()
+        {
+            foreach (SubscribedAuthor author in subscribedAuthors.Values)
+            {
+                if (author.subscribers.Count == 0)
+                    getAuthorNode(author.author).RemoveAll();
+            }
+            doc.Save(subscriptionFile);
         }
 
         public static void addSubscriber(string authorName, string subscriber)
