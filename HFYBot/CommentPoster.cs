@@ -24,7 +24,7 @@ namespace HFYBot
             foreach (Post post in Program.sub.New.Take(10))
             {
                 
-                if (checkPostElegibility(post))
+                if (checkPostElegibility(post) && post.Comments.Where(com => com.Author == Program.user.Name).Count() == 0)
                 {
                     Console.Write("Self post found, \"{0}\", adding comment... ", post.Title);
                     string commentString = generateComment(post);
