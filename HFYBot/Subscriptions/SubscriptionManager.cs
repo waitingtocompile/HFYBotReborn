@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -20,6 +21,8 @@ namespace HFYBot.Subscriptions
 
         static XmlDocument doc = new XmlDocument();
 
+        static TimeSpan waitTime = new TimeSpan(0, 10, 0);
+
         //Checks the bot's inbox for new mail/comments.
         public static void checkInbox()
         {
@@ -27,7 +30,9 @@ namespace HFYBot.Subscriptions
             {
                 foreach (PrivateMessage message in Program.user.UnreadMessages)
                 {
-                    string content = message.Subject;
+                    Debug.Write(message.Body);
+
+                    string content = message.Body;
                     if(content.Substring(0, 6).Equals("HFYBot", StringComparison.InvariantCultureIgnoreCase)){
                         //string content = message.Subject;
                         string[] tokens = content.Split(' ');
@@ -37,13 +42,14 @@ namespace HFYBot.Subscriptions
                         switch (tokens[1])
                         {
                             case("subscribe"):
-                                if (Program.redditInstance.GetUser(tokens[2]) != null)
+                                try
                                 {
+                                    Program.redditInstance.GetUser(tokens[2]);
                                     addSubscriber(tokens[2], message.Author);
                                     message.Reply("Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See here(beta is beta) for more options.");
                                     //ayy llamo
                                 }
-                                else
+                                catch (System.Net.WebException e)
                                 {
                                     message.Reply("I can't find a user by that name. Did you do something wrong?");
                                 }
@@ -57,19 +63,19 @@ namespace HFYBot.Subscriptions
                                 {
                                     string reply = "You are subscribed to:";
                                     foreach (string s in authors)
-                                        reply += "/n/n" + s;
+                                        reply += "\n\n" + s;
                                 }
                                 break;
 
                             case("checksubscribers"):
                                 List<String> subs = checkSubscribers(message.Author);
                                 if (subs.Count == 0)
-                                    message.Reply("You aren't subscribed to anyone!");
+                                    message.Reply("You have no subscribers!");
                                 else
                                 {
-                                    string reply = "You are subscribed to:";
+                                    string reply = "Your subscribers are:";
                                     foreach (string s in subs)
-                                        reply += "/n/n" + s;
+                                        reply += "\n\n" + s;
                                 }
                                 break;
 
@@ -77,7 +83,7 @@ namespace HFYBot.Subscriptions
                                 try{
                                     if (removeSubscriber(tokens[2], message.Author))
                                         message.Reply("Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See here(TODO) for more options.");
-                                        else message.Reply("You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:/n/n    HFYBot checkSubscriptions");
+                                        else message.Reply("You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n    HFYBot checkSubscriptions");
                                 } catch (IndexOutOfRangeException e){
                                     message.Reply("I can't unsubscibe you unless you tell me who.");
                                 }
@@ -88,6 +94,7 @@ namespace HFYBot.Subscriptions
                                 message.Reply("My automated systems have no reponse to that. There is a list here (LOLNOPE, beta is beta)");
                                 break;
                         }
+                        message.SetAsRead();
                     }
                 }
             }
@@ -97,7 +104,7 @@ namespace HFYBot.Subscriptions
         {
             if (!System.IO.File.Exists(subscriptionFile))
             {
-                System.IO.File.Create(subscriptionFile);
+                System.IO.File.Create(subscriptionFile).Dispose();
                 XmlWriterSettings set = new XmlWriterSettings();
                 XmlWriter writer = XmlWriter.Create(subscriptionFile, set);
                 writer.WriteStartDocument();
@@ -108,9 +115,11 @@ namespace HFYBot.Subscriptions
                 writer.WriteEndDocument();
                 writer.Flush();
                 writer.Close();
+                doc.Load(subscriptionFile);
             }
             else
             {
+                doc.Load(subscriptionFile);
                 XmlNodeList authors = doc.SelectNodes("/Subscriptions/AuthorSubscriptions/Author");
                 foreach (XmlNode author in authors)
                 {
@@ -212,23 +221,31 @@ namespace HFYBot.Subscriptions
 
         public static void Run()
         {
-            doc.LoadXml(subscriptionFile);
             loadSubscriptionsFromFile();
+            for (; ; )
+            {
+                checkInbox();
+                Console.WriteLine(ConsoleUtils.TimeStamp + " MailCheck finished. User has {0} unread messages remaining", Program.user.UnreadMessages.Count().ToString());
+                optimiseFile();
+                Thread.Sleep(waitTime);
+            }
+
         }
     }
 
 
     //Structure representing an author one or more users have subscibed to
-    private struct SubscribedAuthor
+    struct SubscribedAuthor
     {
 
-        public List<string> subscribers = new List<string>(0);
+        public List<string> subscribers;
         public readonly string author;
 
 
         public SubscribedAuthor(string name)
         {
             author = name;
+            subscribers = new List<string>(0);
         }
 
     }
