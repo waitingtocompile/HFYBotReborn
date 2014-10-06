@@ -20,13 +20,14 @@ namespace HFYBot
         //pulls a predefined number (currently 10) from the subreddit and posts comments on self posts
         static void MakeCommentPass()
         {
+            SortedList<RedditUser, string> pendingEdits = new SortedList<RedditUser, string>(0);
+
             //I know, the number to pull is hardcoded. I should fix that at some point. Or you could, this project is open source after all (hint hint)
             foreach (Post post in Program.sub.New.Take(10))
             {
-                
                 if (checkPostElegibility(post))
                 {
-                    Console.Write("Self post found, \"{0}\", adding comment... ", post.Title);
+                    Console.Write(ConsoleUtils.TimeStamp + " Self post found, \"{0}\", adding comment... ", post.Title);
                     string commentString = generateComment(post);
                     try
                     {
@@ -41,10 +42,25 @@ namespace HFYBot
                         Console.WriteLine("Done!");
                     }
 
-                    makeMassEdit(post.Author, commentString);
+                    if (pendingEdits.Keys.Contains(post.Author))
+                        pendingEdits[post.Author] = commentString;
+                    else
+                        pendingEdits.Add(post.Author, commentString);
 
                 }
             }
+
+            Console.WriteLine(ConsoleUtils.TimeStamp + " Making mass edits");
+            for (int i = 0; i < pendingEdits.Count; i++)
+            {
+                makeMassEdit(pendingEdits.Keys[i], pendingEdits.Values[i]);
+            }
+
+        }
+
+        static void makeEditPass(SortedList<RedditUser, string> edits)
+        {
+            
         }
 
         static void makeMassEdit(RedditUser user, string commentString)
@@ -109,7 +125,7 @@ namespace HFYBot
             {
                 Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning comment posting pass");
                 MakeCommentPass();
-                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed");
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed, launching mass edit");
 
                 Thread.Sleep(postFrequency);
             }
