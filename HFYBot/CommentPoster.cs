@@ -100,7 +100,7 @@ namespace HFYBot
 
             foreach (Post post in allPosts)
             {
-                if (checkPostElegebility(post))
+                if (checkPostElegibility((post)))
                     relevantPosts.Add(post);
             }
 
