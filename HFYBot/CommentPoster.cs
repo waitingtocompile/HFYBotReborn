@@ -42,6 +42,17 @@ namespace HFYBot
                         Console.WriteLine("Done!");
                     }
 
+                    List<string> users = Subscriptions.SubscriptionManager.checkSubscriptions(post.AuthorName);
+
+                    if (users != null)
+                    {
+                        string messageString = Subscriptions.SubscriptionManager.generateSubscriptionMessage(post);
+                        foreach (string name in users)
+                        {
+                            Program.redditInstance.ComposePrivateMessage("HFYBot Subscription service", messageString, name);
+                        }
+                    }
+
                     if (pendingEdits.Keys.Contains(post.Author))
                         pendingEdits[post.Author] = commentString;
                     else
@@ -49,18 +60,11 @@ namespace HFYBot
 
                 }
             }
-
-            Console.WriteLine(ConsoleUtils.TimeStamp + " Making mass edits");
             for (int i = 0; i < pendingEdits.Count; i++)
             {
                 makeMassEdit(pendingEdits.Keys[i], pendingEdits.Values[i]);
             }
 
-        }
-
-        static void makeEditPass(SortedList<RedditUser, string> edits)
-        {
-            
         }
 
         static void makeMassEdit(RedditUser user, string commentString)
@@ -84,7 +88,7 @@ namespace HFYBot
 
         static bool checkPostElegibility(Post post)
         {
-            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"));
+            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4).Equals("[OC]", StringComparison.InvariantCultureIgnoreCase)));
         }
 
         //Generates actual text for comments. It will never list more than 20 links, otherwise it would hit the character limit on /u/battletoad's posts. This method is also used by the CommentEditor to avoid code duplication.
@@ -125,7 +129,7 @@ namespace HFYBot
             {
                 Console.WriteLine(ConsoleUtils.TimeStamp + " Beginning comment posting pass");
                 MakeCommentPass();
-                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed, launching mass edit");
+                Console.WriteLine(ConsoleUtils.TimeStamp + " Comment posting Pass completed");
 
                 Thread.Sleep(postFrequency);
             }

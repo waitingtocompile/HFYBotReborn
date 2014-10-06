@@ -23,15 +23,40 @@ namespace HFYBot.Subscriptions
 
         static TimeSpan waitTime = new TimeSpan(0, 10, 0);
 
+        static void respondToMessage(Thing message, string response){
+            try{
+                ((Comment)message).Reply(response);
+            }
+            catch(InvalidCastException e)
+            {
+                ((PrivateMessage)message).Reply(response);
+            }
+        }
+
         //Checks the bot's inbox for new mail/comments.
         public static void checkInbox()
         {
             if (Program.user.HasMail)
             {
-                foreach (PrivateMessage message in Program.user.UnreadMessages)
+                foreach (Thing message in Program.user.UnreadMessages)
                 {
-                    string content = message.Body;
-                    if(content.Substring(0, 6).Equals("HFYBot", StringComparison.InvariantCultureIgnoreCase)){
+                    string author;
+                    string content;
+
+                    try
+                    {
+                        author = ((Comment)message).Author;
+                        content = ((Comment)message).Body;
+                    }
+                    catch (InvalidCastException e)
+                    {
+                        author = ((PrivateMessage)message).Author;
+                        content = ((PrivateMessage)message).Body;
+                    }
+
+
+                    if(content.Substring(0, 6).Equals("HFYBot", StringComparison.InvariantCultureIgnoreCase))
+                    {
                         string[] tokens = content.Split(' ');
                         for (int i = 0; i < tokens.Length; i++)
                             tokens[i] = tokens[i].ToLowerInvariant();
@@ -42,62 +67,76 @@ namespace HFYBot.Subscriptions
                                 try
                                 {
                                     Program.redditInstance.GetUser(tokens[2]);
-                                    addSubscriber(tokens[2], message.Author);
-                                    message.Reply("Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See here(beta is beta) for more options.");
+                                    addSubscriber(tokens[2], author);
+                                    respondToMessage(message, "Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See here(beta is beta) for more options.");
                                     //ayy llamo
                                 }
                                 catch (System.Net.WebException e)
                                 {
-                                    message.Reply("I can't find a user by that name. Did you do something wrong?");
+                                    respondToMessage(message, "I can't find a user by that name. Did you do something wrong?");
                                 }
                                 break;
                                 
                             case("checksubscriptions"):
-                                List<String> authors = checkSubscriptions(message.Author);
+                                List<String> authors = checkSubscriptions(author);
                                 if (authors.Count == 0)
-                                    message.Reply("You aren't subscribed to anyone!");
+                                    respondToMessage(message, "You aren't subscribed to anyone!");
                                 else
                                 {
                                     string reply = "You are subscribed to:";
                                     foreach (string s in authors)
                                         reply += "\n\n" + s;
-                                    message.Reply(reply);
+                                    respondToMessage(message, reply);
                                 }
                                 break;
 
                             case("checksubscribers"):
-                                List<String> subs = checkSubscribers(message.Author);
+                                List<String> subs = checkSubscribers(author);
                                 if (subs == null)
-                                    message.Reply("You have no subscribers!");
+                                    respondToMessage(message, "You have no subscribers!");
                                 else
                                 {
                                     string reply = "Your subscribers are:";
                                     foreach (string s in subs)
                                         reply += "\n\n" + s;
-                                    message.Reply(reply);
+                                    respondToMessage(message, reply);
                                 }
                                 break;
 
                             case("unsubscribe"):
                                 try{
-                                    if (removeSubscriber(tokens[2], message.Author))
-                                        message.Reply("Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See here(TODO) for more options.");
-                                        else message.Reply("You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n    HFYBot checkSubscriptions");
+                                    if (removeSubscriber(tokens[2], author))
+                                        respondToMessage(message, "Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See here(TODO) for more options.");
+                                    respondToMessage(message, "You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n    HFYBot checkSubscriptions");
                                 } catch (IndexOutOfRangeException e){
-                                    message.Reply("I can't unsubscribe you unless you tell me who.");
+                                    respondToMessage(message, "I can't unsubscribe you unless you tell me who.");
                                 }
                                 
                                 break;
 
                             default:
-                                message.Reply("My automated systems have no reponse to that. There is a list here (LOLNOPE, beta is beta)");
+                                respondToMessage(message, "My automated systems have no reponse to that. There is a list here (LOLNOPE, beta is beta)");
                                 break;
                         }
-                        message.SetAsRead();
+                        try
+                        {
+                            ((Comment)message).SetAsRead();
+                        }
+                        catch(InvalidCastException e)
+                        {
+                            ((PrivateMessage)message).SetAsRead();
+                        }
+                        
                     }
                 }
             }
         }
+
+        public static string generateSubscriptionMessage(Post post)
+        {
+            return("[u/" + post.AuthorName + "](http://reddit.com/u/" + post.Author.Name + ") has posted a new story, [" + post.Title +"]("+ post.Permalink + "). You can find out about modifying your subscriptions [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot)");
+        }
+
 
         public static void loadSubscriptionsFromFile()
         {
@@ -189,9 +228,9 @@ namespace HFYBot.Subscriptions
                 {
                     author.subscribers.Remove(subscriber);
                     XmlNode authorNode = getAuthorNode(authorName);
-                    foreach (XmlNode SubscriberNode in authorNode.SelectNodes("/Subscriber"))
+                    foreach (XmlNode SubscriberNode in authorNode.ChildNodes)
                     {
-                        if (SubscriberNode.InnerText.Equals(subscriber, StringComparison.InvariantCultureIgnoreCase))
+                        if (SubscriberNode.Name.Equals("Subscriber") && SubscriberNode.InnerText.Equals(subscriber, StringComparison.InvariantCultureIgnoreCase))
                         {
                             authorNode.RemoveChild(SubscriberNode);
                             doc.Save(subscriptionFile);
@@ -238,6 +277,8 @@ namespace HFYBot.Subscriptions
             }
 
         }
+
+        
     }
 
 
