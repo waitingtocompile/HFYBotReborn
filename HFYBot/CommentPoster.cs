@@ -20,13 +20,15 @@ namespace HFYBot
         //pulls a predefined number (currently 10) from the subreddit and posts comments on self posts
         static void MakeCommentPass()
         {
+            SortedList<RedditUser, string> pendingEdits = new SortedList<RedditUser, string>(0);
+
             //I know, the number to pull is hardcoded. I should fix that at some point. Or you could, this project is open source after all (hint hint)
             foreach (Post post in Program.sub.New.Take(10))
             {
                 
                 if (checkPostElegibility(post) && post.Comments.Where(com => com.Author == Program.user.Name).Count() == 0)
                 {
-                    Console.Write("Self post found, \"{0}\", adding comment... ", post.Title);
+                    Console.Write(ConsoleUtils.TimeStamp + " Self post found, \"{0}\", adding comment... ", post.Title);
                     string commentString = generateComment(post);
                     try
                     {
@@ -41,10 +43,29 @@ namespace HFYBot
                         Console.WriteLine("Done!");
                     }
 
-                    makeMassEdit(post.Author, commentString);
+                    List<string> users = Subscriptions.SubscriptionManager.checkSubscriptions(post.AuthorName);
+
+                    if (users != null)
+                    {
+                        string messageString = Subscriptions.SubscriptionManager.generateSubscriptionMessage(post);
+                        foreach (string name in users)
+                        {
+                            Program.redditInstance.ComposePrivateMessage("HFYBot Subscription service", messageString, name);
+                        }
+                    }
+
+                    if (pendingEdits.Keys.Contains(post.Author))
+                        pendingEdits[post.Author] = commentString;
+                    else
+                        pendingEdits.Add(post.Author, commentString);
 
                 }
             }
+            for (int i = 0; i < pendingEdits.Count; i++)
+            {
+                makeMassEdit(pendingEdits.Keys[i], pendingEdits.Values[i]);
+            }
+
         }
 
         static void makeMassEdit(RedditUser user, string commentString)
@@ -68,7 +89,7 @@ namespace HFYBot
 
         static bool checkPostElegibility(Post post)
         {
-            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"));
+            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4).Equals("[OC]", StringComparison.InvariantCultureIgnoreCase)));
         }
 
         //Generates actual text for comments. It will never list more than 20 links, otherwise it would hit the character limit on /u/battletoad's posts. This method is also used by the CommentEditor to avoid code duplication.
@@ -79,7 +100,7 @@ namespace HFYBot
 
             foreach (Post post in allPosts)
             {
-                if (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4) == "[OC]"))
+                if (checkPostElegebility(post))
                     relevantPosts.Add(post);
             }
 
