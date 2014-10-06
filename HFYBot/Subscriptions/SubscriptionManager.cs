@@ -30,11 +30,8 @@ namespace HFYBot.Subscriptions
             {
                 foreach (PrivateMessage message in Program.user.UnreadMessages)
                 {
-                    Debug.Write(message.Body);
-
                     string content = message.Body;
                     if(content.Substring(0, 6).Equals("HFYBot", StringComparison.InvariantCultureIgnoreCase)){
-                        //string content = message.Subject;
                         string[] tokens = content.Split(' ');
                         for (int i = 0; i < tokens.Length; i++)
                             tokens[i] = tokens[i].ToLowerInvariant();
@@ -64,18 +61,20 @@ namespace HFYBot.Subscriptions
                                     string reply = "You are subscribed to:";
                                     foreach (string s in authors)
                                         reply += "\n\n" + s;
+                                    message.Reply(reply);
                                 }
                                 break;
 
                             case("checksubscribers"):
                                 List<String> subs = checkSubscribers(message.Author);
-                                if (subs.Count == 0)
+                                if (subs == null)
                                     message.Reply("You have no subscribers!");
                                 else
                                 {
                                     string reply = "Your subscribers are:";
                                     foreach (string s in subs)
                                         reply += "\n\n" + s;
+                                    message.Reply(reply);
                                 }
                                 break;
 
@@ -85,7 +84,7 @@ namespace HFYBot.Subscriptions
                                         message.Reply("Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See here(TODO) for more options.");
                                         else message.Reply("You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n    HFYBot checkSubscriptions");
                                 } catch (IndexOutOfRangeException e){
-                                    message.Reply("I can't unsubscibe you unless you tell me who.");
+                                    message.Reply("I can't unsubscribe you unless you tell me who.");
                                 }
                                 
                                 break;
@@ -108,7 +107,7 @@ namespace HFYBot.Subscriptions
                 XmlWriterSettings set = new XmlWriterSettings();
                 XmlWriter writer = XmlWriter.Create(subscriptionFile, set);
                 writer.WriteStartDocument();
-                writer.WriteStartElement("Subscribtions");
+                writer.WriteStartElement("Subscriptions");
                 writer.WriteStartElement("AuthorSubscriptions");
                 writer.WriteEndElement();
                 writer.WriteEndElement();
@@ -123,13 +122,18 @@ namespace HFYBot.Subscriptions
                 XmlNodeList authors = doc.SelectNodes("/Subscriptions/AuthorSubscriptions/Author");
                 foreach (XmlNode author in authors)
                 {
-                    string name = author.Attributes["name"].Value;
-                    SubscribedAuthor sub = new SubscribedAuthor(author.Attributes["name"].Value);
+                    string name = author.Attributes["name"].Value.ToString();
+                    SubscribedAuthor sub = new SubscribedAuthor(name);
                     subscribedAuthors.Add(name, sub);
-                    XmlNodeList subscribers = author.SelectNodes("/Subscriber");
+
+                    XmlNodeList subscribers = author.ChildNodes;
                     foreach (XmlNode subscriber in subscribers)
                     {
-                        sub.subscribers.Add(subscriber.InnerText);
+                        if (subscriber.Name.Equals("Subscriber"))
+                        {
+                            sub.subscribers.Add(subscriber.InnerText.ToString());
+                        }
+                        
                     }
                 }
             }
@@ -176,8 +180,10 @@ namespace HFYBot.Subscriptions
 
         public static bool removeSubscriber(string authorName, string subscriber)
         {
+            authorName = authorName.ToLowerInvariant();
+            subscriber = subscriber.ToLowerInvariant();
             SubscribedAuthor author;
-            if (subscribedAuthors.TryGetValue("author", out author))
+            if (subscribedAuthors.TryGetValue(authorName, out author))
             {
                 if (author.subscribers.Contains(subscriber))
                 {
@@ -188,6 +194,7 @@ namespace HFYBot.Subscriptions
                         if (SubscriberNode.InnerText.Equals(subscriber, StringComparison.InvariantCultureIgnoreCase))
                         {
                             authorNode.RemoveChild(SubscriberNode);
+                            doc.Save(subscriptionFile);
                             break;
                         }
                     }
@@ -226,7 +233,7 @@ namespace HFYBot.Subscriptions
             {
                 checkInbox();
                 Console.WriteLine(ConsoleUtils.TimeStamp + " MailCheck finished. User has {0} unread messages remaining", Program.user.UnreadMessages.Count().ToString());
-                optimiseFile();
+                //optimiseFile();
                 Thread.Sleep(waitTime);
             }
 
