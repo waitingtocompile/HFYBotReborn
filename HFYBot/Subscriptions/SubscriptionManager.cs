@@ -68,7 +68,7 @@ namespace HFYBot.Subscriptions
                                 {
                                     Program.redditInstance.GetUser(tokens[2]);
                                     addSubscriber(tokens[2], author);
-                                    respondToMessage(message, "Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See here(beta is beta) for more options.");
+                                    respondToMessage(message, "Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot) for more options.");
                                     //ayy llamo
                                 }
                                 catch (System.Net.WebException e)
@@ -106,7 +106,7 @@ namespace HFYBot.Subscriptions
                             case("unsubscribe"):
                                 try{
                                     if (removeSubscriber(tokens[2], author))
-                                        respondToMessage(message, "Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See here(TODO) for more options.");
+                                        respondToMessage(message, "Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot) for more options.");
                                     respondToMessage(message, "You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n    HFYBot checkSubscriptions");
                                 } catch (IndexOutOfRangeException e){
                                     respondToMessage(message, "I can't unsubscribe you unless you tell me who.");
@@ -115,7 +115,7 @@ namespace HFYBot.Subscriptions
                                 break;
 
                             default:
-                                respondToMessage(message, "My automated systems have no reponse to that. There is a list here (LOLNOPE, beta is beta)");
+                                respondToMessage(message, "My automated systems have no reponse to that. There is a list here [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot)");
                                 break;
                         }
                         try
