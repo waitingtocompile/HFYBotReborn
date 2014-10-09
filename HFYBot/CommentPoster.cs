@@ -87,22 +87,50 @@ namespace HFYBot
             }
         }
 
+        static bool IsOC(Post post)
+        {
+            // GetTag will catch everything except posts that are unflaired that don't have
+            // OC as the first tag, which is why there's the second part here.
+            return string.Equals("OC", GetTag(post)) || post.Title.ToUpper().Contains("[OC]");
+        }
+
+        /// <Summary>
+        /// Gets the LinkFlairText field out of the post object.
+        /// If it's unflaired, it checks the title for the first tag in []'s
+        /// If the post's unflaired, the following scenarios explain what you'll get
+        /// Passing in "[oc] my first post, please be gentle" will return "OC"
+        /// Passing in "[oc][FIRE] my first post, please be gentle" will return "OC"
+        /// Passing in "[FIRE] my first post, please be gentle [oc]" will return "FIRE"
+        /// If there's no tag either in the LinkFlairText or post title, it returns "NO TAG"
+        /// </Summary>
+        public static string GetTag(Post post)
+        {
+            //If there's no tag in the post itself
+            if (string.IsNullOrEmpty(post.LinkFlairText))
+            {
+                // Does the ] come after [, and does [ exist?
+                if (post.Title.IndexOf(']') > post.Title.IndexOf('[') && post.Title.IndexOf('[') > -1)
+                {
+                    return string.Join("", post.Title.ToCharArray().SkipWhile(x => x != '[').Skip(1).TakeWhile(x => x != ']')).ToUpper();
+                }
+                return "NO TAG";
+            }
+            return post.LinkFlairText;
+        }
+
         static bool checkPostElegibility(Post post)
         {
-            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && (post.LinkFlairText == "OC" | post.Title.Substring(0, 4).Equals("[OC]", StringComparison.InvariantCultureIgnoreCase)));
+            return (post.Subreddit == Program.sub.Name && post.IsSelfPost && IsOC(post));
         }
 
         //Generates actual text for comments. It will never list more than 20 links, otherwise it would hit the character limit on /u/battletoad's posts. This method is also used by the CommentEditor to avoid code duplication.
         static string generateComment(Post originPost)
         {
-            List<Post> allPosts = originPost.Author.Posts.ToList();
-            List<Post> relevantPosts = new List<Post>(0);
-
-            foreach (Post post in allPosts)
-            {
-                if (checkPostElegibility((post)))
-                    relevantPosts.Add(post);
-            }
+            List<Post> relevantPosts = originPost
+                                            .Author
+                                            .Posts
+                                            .Where(checkPostElegibility)
+                                            .OrderByDescending(x => x.Upvotes).ToList();
 
             if (relevantPosts.Count <= 1)
             {
