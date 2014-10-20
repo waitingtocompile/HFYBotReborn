@@ -68,54 +68,54 @@ namespace HFYBot.Subscriptions
                                 {
                                     Program.redditInstance.GetUser(tokens[2]);
                                     addSubscriber(tokens[2], author);
-                                    respondToMessage(message, "Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot) for more options.");
+                                    respondToMessage(message, "Your have now been subscribed to " + tokens[2] + ", you will be messaged when they post new content. See [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot) for more options.\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                     //ayy llamo
                                 }
                                 catch (System.Net.WebException e)
                                 {
-                                    respondToMessage(message, "I can't find a user by that name. Did you do something wrong?");
+                                    respondToMessage(message, "I can't find a user by that name. Did you do something wrong?\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 }
                                 break;
                                 
                             case("checksubscriptions"):
                                 List<String> authors = checkSubscriptions(author);
                                 if (authors.Count == 0)
-                                    respondToMessage(message, "You aren't subscribed to anyone!");
+                                    respondToMessage(message, "You aren't subscribed to anyone!\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 else
                                 {
                                     string reply = "You are subscribed to:";
                                     foreach (string s in authors)
                                         reply += "\n\n" + s;
-                                    respondToMessage(message, reply);
+                                    respondToMessage(message, reply + "\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 }
                                 break;
 
                             case("checksubscribers"):
                                 List<String> subs = checkSubscribers(author);
                                 if (subs == null)
-                                    respondToMessage(message, "You have no subscribers!");
+                                    respondToMessage(message, "You have no subscribers!\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 else
                                 {
                                     string reply = "Your subscribers are:";
                                     foreach (string s in subs)
                                         reply += "\n\n" + s;
-                                    respondToMessage(message, reply);
+                                    respondToMessage(message, reply + "\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 }
                                 break;
 
                             case("unsubscribe"):
                                 try{
                                     if (removeSubscriber(tokens[2], author))
-                                        respondToMessage(message, "Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot) for more options.");
-                                    respondToMessage(message, "You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n    HFYBot checkSubscriptions");
+                                        respondToMessage(message, "Your have now been unsubscribed from " + tokens[2] + ", you will no longer be messaged when they post new content. See [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot) for more options.\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
+                                    respondToMessage(message, "You don't seem to be subscribed to someone by that name. Did you do mis-spell their name (you can check you subscriptions by messaging me with:\n\n>HFYBot checkSubscriptions\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 } catch (IndexOutOfRangeException e){
-                                    respondToMessage(message, "I can't unsubscribe you unless you tell me who.");
+                                    respondToMessage(message, "I can't unsubscribe you unless you tell me who.\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 }
                                 
                                 break;
 
                             default:
-                                respondToMessage(message, "My automated systems have no reponse to that. There is a list here [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot)");
+                                respondToMessage(message, "My automated systems have no reponse to that. There is a list here [here](http://www.reddit.com/r/HFY/wiki/tools/hfybot)\n\nI am currently running in burst mode for debugging pusposes. All 1.3 content will be intermitent at best. Old (pre 1.3) functionality will be unaffected.");
                                 break;
                         }
                         try

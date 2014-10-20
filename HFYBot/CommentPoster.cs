@@ -54,16 +54,9 @@ namespace HFYBot
                         }
                     }
 
-                    if (pendingEdits.Keys.Contains(post.Author))
-                        pendingEdits[post.Author] = commentString;
-                    else
-                        pendingEdits.Add(post.Author, commentString);
+                    makeMassEdit(post.Author, commentString);
 
                 }
-            }
-            for (int i = 0; i < pendingEdits.Count; i++)
-            {
-                makeMassEdit(pendingEdits.Keys[i], pendingEdits.Values[i]);
             }
 
         }
