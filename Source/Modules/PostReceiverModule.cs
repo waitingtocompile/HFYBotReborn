@@ -49,10 +49,10 @@ namespace HFYBot.Modules
 			try{
 				List<RedditUser> pendingEdits = new List<RedditUser>(0);
 
-				List<Post> posts = sub.New.GetListing(postCount);
+				List<Post> posts = (List<Post>)sub.New.GetListing(postCount);
 				foreach(Post post in posts){
 					if(isOC(post) && !processed(post)){
-						if(!pendingEdits.Exists(post.Author)) pendingEdits.Add(post.Author);
+						if(!pendingEdits.Contains(post.Author)) pendingEdits.Add(post.Author);
 						post.Comment("Please wait...");
 					}
 				}
@@ -69,7 +69,7 @@ namespace HFYBot.Modules
 				}
 
 			} catch (System.Net.WebException) {
-				ModuleState = ModuleState.Crashed;
+				state = ModuleState.Crashed;
 				enabled = false;
 				//TODO: automatically restart module upon crash.
 			}
