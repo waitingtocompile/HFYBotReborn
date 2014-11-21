@@ -6,19 +6,36 @@ namespace HFYBot
 {
 	class Program
 	{
+		/// <summary>
+		/// The version of the program to be displayed to users and the general public.
+		/// </summary>
 		public const string version = "2.0 experimental";
 
+		/// <summary>
+		/// All modules should be in this list. There are many planned methods that are not yet implemented 
+		/// </summary>
 		static List<RedditModule> Modules = new List<RedditModule>();
 
+		/// <summary>
+		/// The instance of the Reddit API that the bot uses. Individual modules can (in theory) have their own though will generally use this.
+		/// </summary>
 		static Reddit reddit;
 
+		/// <summary>
+		/// The entry point of the program, where the program control starts and ends.
+		/// </summary>
+		/// <param name="args">The command-line arguments.</param>
 		public static void Main (string[] args)
 		{
 			reddit = LogIn();
-
+			//TODO: actual code to execute
 			Console.Read();
 		}
 
+		/// <summary>
+		/// Prompts the user to log in. Will ask again if details are incorrect. Will end the program if it cannot connect to reddit.
+		/// </summary>
+		/// <returns>The Instance of the Reddit API logged into</returns>
 		static Reddit LogIn()
 		{
 			while (true) {
@@ -38,8 +55,11 @@ namespace HFYBot
 
 		}
 
+		/// <summary>
+		/// Loads the core modules. Other modules can be dunamically loaded later
+		/// </summary>
 		static void LoadCoreModules(){
-
+			//TODO: Implement core module loading
 		}
 	}
 }

@@ -7,23 +7,45 @@ using RedditSharp.Things;
 
 namespace HFYBot.Modules
 {
+	/// <summary>
+	/// Module that deals with new posts on the subreddit.
+	/// </summary>
 	public class PostReceiverModule : RedditModule
 	{
+		/// <summary>
+		/// The thread on which the module operates.
+		/// </summary>
 		Thread thread;
 
+		/// <summary>
+		/// Internal flag to tell whether the module should be enabled. Allows module to finish a pass before stopping. 
+		/// </summary>
 		private bool enabled = false;
 
+		/// <summary>
+		/// The time to wait between passes
+		/// </summary>
 		TimeSpan waitTime = new TimeSpan (0, 5, 0);
 
 
-
-		public PostReceiverModule (Reddit reddit, Subreddit sub) :base("post receiver", reddit)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="HFYBot.Modules.PostReceiverModule"/> class.
+		/// </summary>
+		/// <param name="reddit">Reddit API instance</param>
+		/// <param name="sub">Target subreddit</param>
+		public PostReceiverModule (Reddit reddit, Subreddit sub) :base("post receiver", reddit, sub)
 		{
-			thread = new Thread(new ThreadStart(run()));
-			ModuleState = ModuleState.Diabled;
+			thread = new Thread(new ThreadStart(run));
+			state = ModuleState.Diabled;
 		}
-	
+
+		/// <summary>
+		/// Make a pass through a number of new posts
+		/// </summary>
+		/// <param name="postCount">The number of posts to check</param>
 		void MakePass(int postCount){
+
+			//TODO: Optimise post receiveing code. 
 			try{
 				List<RedditUser> pendingEdits = new List<RedditUser>(0);
 
@@ -49,9 +71,15 @@ namespace HFYBot.Modules
 			} catch (System.Net.WebException) {
 				ModuleState = ModuleState.Crashed;
 				enabled = false;
+				//TODO: automatically restart module upon crash.
 			}
 		}
 
+		/// <summary>
+		/// Generates the comment text.
+		/// </summary>
+		/// <returns>The comment text.</returns>
+		/// <param name="user">User to generate text for.</param>
 		string generateCommentText(RedditUser user){
 			int count = 0;
 			List<Post> availiblePosts = new List<Post>(0);
@@ -79,11 +107,19 @@ namespace HFYBot.Modules
 				+". Please contact /u/KaiserMagnus if you have any queries. This bot is [open source]((https://github.com/waitingtocompile/HFYBotReborn).";
 			return comm;
 		}
-
+		/// <summary>
+		/// Checks if post is OC
+		/// </summary>
+		/// <returns><c>true</c>, if is OC, <c>false</c> otherwise.</returns>
+		/// <param name="post">Post to check</param>
 		bool isOC(Post post){
 			return (post.Title.ToUpperInvariant().Contains("[OC]")|post.LinkFlairText.ToUpperInvariant().Equals("OC"));
 		}
 
+		/// <summary>
+		/// Checks if post has been processed
+		/// </summary>
+		/// <param name="post">Post to check</param>
 		bool processed(Post post){
 			foreach (Comment com in post.Comments) {
 				if (com.Author.Equals (reddit.User.Name))
@@ -92,6 +128,9 @@ namespace HFYBot.Modules
 			return false;
 		}
 
+		/// <summary>
+		/// Run this instance. Intended to be started within the thread.
+		/// </summary>
 		void run()
 		{
 			state = ModuleState.Enabled;
@@ -105,6 +144,10 @@ namespace HFYBot.Modules
 			state = ModuleState.Diabled;
 		}
 
+		/// <summary>
+		/// Sets whether the module is enabled. Will wait until the current pass is finished.
+		/// </summary>
+		/// <param name="b">Intended state.</param>
 		public void setEnabled(bool b){
 			if (!b && state.Equals (ModuleState.Idle)) {
 				thread.Abort ();

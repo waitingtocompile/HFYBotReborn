@@ -2,8 +2,17 @@ using System;
 
 namespace HFYBot
 {
+	/// <summary>
+	/// Provides some useful console related functions.
+	/// </summary>
 	public class ConsoleHelper
 	{
+		/// <summary>
+		/// Request a sting from the user
+		/// </summary>
+		/// <returns>The string input</returns>
+		/// <param name="descriptor">DA description of the string to show to the user.</param>
+		/// <param name="hideChars">If set to <c>true</c> hide chars (useful for passwords).</param>
 		public static string RequestString(string descriptor, bool hideChars = false){
 			Console.CursorVisible = true;
 			Console.Write(descriptor + ": ");
