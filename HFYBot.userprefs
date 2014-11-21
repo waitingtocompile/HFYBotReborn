@@ -1,9 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Program.cs">
     <Files>
-      <File FileName="Program.cs" Line="1" Column="1" />
+      <File FileName="Source/Program.cs" Line="27" Column="49" />
+      <File FileName="Source/BotModule.cs" Line="11" Column="4" />
+      <File FileName="Source/RedditModule.cs" Line="11" Column="4" />
+      <File FileName="Source/ConsoleHelper.cs" Line="18" Column="37" />
+      <File FileName="../../RedditSharp/RedditSharp/Reddit.cs" Line="33" Column="3" />
     </Files>
+    <Pads>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True">
+          <Node name="HFYBot" expanded="True">
+            <Node name="HFYBot" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

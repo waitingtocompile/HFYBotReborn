@@ -1,24 +1,26 @@
 using System;
+using System.Collections.Generic;
 using RedditSharp;
 
-using System.Diagnostics;
 namespace HFYBot
 {
 	class Program
 	{
 		public const string version = "2.0 experimental";
 
+		static List<RedditModule> Modules = new List<RedditModule>();
+
+		static Reddit reddit;
+
 		public static void Main (string[] args)
 		{
-			Reddit reddit = LogIn();
+			reddit = LogIn();
 
 			Console.Read();
 		}
 
 		static Reddit LogIn()
 		{
-
-
 			while (true) {
 				Console.WriteLine("Please log in to Reddit");
 				try{
@@ -33,6 +35,10 @@ namespace HFYBot
 					System.Environment.Exit (0);
 				}
 			}
+
+		}
+
+		static void LoadCoreModules(){
 
 		}
 	}

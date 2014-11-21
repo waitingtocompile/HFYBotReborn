@@ -1,18 +1,35 @@
 using System;
 using RedditSharp;
+using RedditSharp.Things;
 
 namespace HFYBot
 {
-	public abstract class RedditModule : BotModule
+	public abstract class RedditModule
 	{
-		protected Reddit reddit;
+		public readonly string name;
 
-		public RedditModule (string name, Reddit redditInstance) : base(name)
+		protected Reddit reddit;
+		protected Subreddit sub;
+
+		public bool enabled();
+
+		public ModuleState state{ get; protected set; }
+
+		public RedditModule (string name, Reddit redditInstance, Subreddit sub)
 		{
+			this.name = name;
+			this.sub = sub;
 			reddit = redditInstance;
 		}
 
 
+	}
+
+	enum ModuleState{
+		Enabled,
+		Idle,
+		Diabled,
+		Crashed
 	}
 }
 
