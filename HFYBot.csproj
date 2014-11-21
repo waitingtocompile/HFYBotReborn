@@ -45,6 +45,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Program.cs" />
+    <Compile Include="Source\BotModule.cs" />
+    <Compile Include="Source\RedditModule.cs" />
+    <Compile Include="Source\ConsoleHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
