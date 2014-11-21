@@ -1,9 +1,12 @@
 HFYBotReborn
 ============
 
-An attempt to bring the bot belonging to /r/HFY back to life. It is being born anew, now using C# and the RedditSharp API as well as Newtonsoft.Json and HtmlAgilityPack (both come with RedditSharp)
+The bot used by /r/HFY. It is a direct replacement of the old HFYBot, and currently fulfils all its functionality. The bot is currently undergoing a complete redesign, look at the legacy branch for the older code.
 
-Note that you will have to supply your own copy of the RedditSharp API, it can be found at https://github.com/SirCmpwn/RedditSharp
-Build it and it will produce the 3 .dlls needed
+HFYBotReborn uses the RedditSharp API and the mono framework.
 
-The bot is now functional. I am in the process of adding a number of new features now.
+The new version of the branch is now non functional. I am currently in the process of building the core of the bot and will then start adding a number of loosely coupled modules.
+
+For details on the new version of the bot go to [Here](http://www.reddit.com/r/HFY/comments/2mvzrg/metahfybot_status_post_thing/).
+
+
