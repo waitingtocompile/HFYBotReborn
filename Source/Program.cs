@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using RedditSharp;
 
+using HFYBot.Modules;
+
 namespace HFYBot
 {
 	class Program
@@ -10,6 +12,11 @@ namespace HFYBot
 		/// The version of the program to be displayed to users and the general public.
 		/// </summary>
 		public const string version = "2.0 experimental";
+
+		/// <summary>
+		/// The default subreddit the bot will use when acessing reddit. Some modules may use a different subreddit.
+		/// </summary>
+		public const string defaultSubreddit = "/r/bottest";
 
 		/// <summary>
 		/// All modules should be in this list. There are many planned methods that are not yet implemented 
@@ -28,6 +35,8 @@ namespace HFYBot
 		public static void Main (string[] args)
 		{
 			reddit = LogIn();
+			LoadCoreModules();
+			((PostReceiverModule)getModuleByName ("post receiver")).setEnabled (true);
 			//TODO: actual code to execute
 			Console.Read();
 		}
@@ -56,10 +65,22 @@ namespace HFYBot
 		}
 
 		/// <summary>
-		/// Loads the core modules. Other modules can be dunamically loaded later
+		/// Loads the core modules. Other modules can be dynamically loaded later
 		/// </summary>
 		static void LoadCoreModules(){
-			//TODO: Implement core module loading
+			Modules.Add(new PostReceiverModule(reddit, defaultSubreddit));
+		}
+
+		/// <summary>
+		/// Gets a module by its name.
+		/// </summary>
+		/// <returns>The maned module.</returns>
+		/// <param name="name">Name of the module.</param>
+		public static RedditModule getModuleByName(string name){
+			foreach (RedditModule module in Modules) {
+				if(module.name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+				   return module;
+			}
 		}
 	}
 }

@@ -18,15 +18,9 @@ namespace HFYBot.Modules
 		Thread thread;
 
 		/// <summary>
-		/// Internal flag to tell whether the module should be enabled. Allows module to finish a pass before stopping. 
-		/// </summary>
-		private bool enabled = false;
-
-		/// <summary>
 		/// The time to wait between passes
 		/// </summary>
 		TimeSpan waitTime = new TimeSpan (0, 5, 0);
-
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HFYBot.Modules.PostReceiverModule"/> class.
@@ -36,7 +30,6 @@ namespace HFYBot.Modules
 		public PostReceiverModule (Reddit reddit, Subreddit sub) :base("post receiver", reddit, sub)
 		{
 			thread = new Thread(new ThreadStart(run));
-			state = ModuleState.Diabled;
 		}
 
 		/// <summary>
@@ -45,7 +38,7 @@ namespace HFYBot.Modules
 		/// <param name="postCount">The number of posts to check</param>
 		void MakePass(int postCount){
 
-			//TODO: Optimise post receiveing code. 
+			//TODO: Optimise post recieveing code. 
 			try{
 				List<RedditUser> pendingEdits = new List<RedditUser>(0);
 
@@ -70,8 +63,6 @@ namespace HFYBot.Modules
 
 			} catch (System.Net.WebException) {
 				state = ModuleState.Crashed;
-				enabled = false;
-				//TODO: automatically restart module upon crash.
 			}
 		}
 
@@ -140,15 +131,28 @@ namespace HFYBot.Modules
 				Thread.Sleep (waitTime);
 				state = ModuleState.Enabled;
 				MakePass(5);
+				if (state.Equals (ModuleState.Crashed)) {
+					Thread.Sleep (10000);
+					state = ModuleState.Enabled;
+					MakePass(5);
+					if (state.Equals (ModuleState.Crashed)) {
+						Thread.Sleep (120000);
+						state = ModuleState.Enabled;
+						MakePass(5);
+						if(state.Equals(ModuleState.Crashed))
+						   break;
+					}
+				}
 			}
-			state = ModuleState.Diabled;
+			if(state != ModuleState.Crashed)
+				state = ModuleState.Diabled;
 		}
 
 		/// <summary>
 		/// Sets whether the module is enabled. Will wait until the current pass is finished.
 		/// </summary>
 		/// <param name="b">Intended state.</param>
-		public void setEnabled(bool b){
+		public override void setEnabled(bool b){
 			if (!b && state.Equals (ModuleState.Idle)) {
 				thread.Abort ();
 				enabled = false;

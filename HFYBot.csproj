@@ -48,6 +48,8 @@
     <Compile Include="Source\RedditModule.cs" />
     <Compile Include="Source\ConsoleHelper.cs" />
     <Compile Include="Source\Modules\PostReceiverModule.cs" />
+    <Compile Include="Source\Module.cs" />
+    <Compile Include="Source\Modules\UserInterfaceModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
