@@ -1,14 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Modules/PostReceiverModule.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Modules/UserInterfaceModule.cs">
     <Files>
-      <File FileName="Source/Program.cs" Line="31" Column="34" />
-      <File FileName="Source/RedditModule.cs" Line="50" Column="9" />
-      <File FileName="Source/ConsoleHelper.cs" Line="15" Column="86" />
-      <File FileName="Source/Modules/PostReceiverModule.cs" Line="50" Column="48" />
-      <File FileName="../../RedditSharp/RedditSharp/Reddit.cs" Line="33" Column="3" />
-      <File FileName="../../RedditSharp/RedditSharp/Things/Subreddit.cs" Line="125" Column="77" />
-      <File FileName="../../RedditSharp/RedditSharp/Listing.cs" Line="67" Column="59" />
+      <File FileName="Source/Program.cs" Line="40" Column="56" />
+      <File FileName="Source/RedditModule.cs" Line="1" Column="1" />
+      <File FileName="Source/Modules/PostReceiverModule.cs" Line="160" Column="3" />
+      <File FileName="Source/Module.cs" Line="1" Column="1" />
+      <File FileName="Source/Modules/UserInterfaceModule.cs" Line="45" Column="30" />
     </Files>
     <Pads>
       <Pad Id="ClassPad">

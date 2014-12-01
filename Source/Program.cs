@@ -21,7 +21,7 @@ namespace HFYBot
 		/// <summary>
 		/// All modules should be in this list. There are many planned methods that are not yet implemented 
 		/// </summary>
-		static List<RedditModule> Modules = new List<RedditModule>();
+		static List<RedditModule> modules = new List<RedditModule>();
 
 		/// <summary>
 		/// The instance of the Reddit API that the bot uses. Individual modules can (in theory) have their own though will generally use this.
@@ -36,9 +36,8 @@ namespace HFYBot
 		{
 			reddit = LogIn();
 			LoadCoreModules();
-			((PostReceiverModule)getModuleByName ("post receiver")).setEnabled (true);
-			//TODO: actual code to execute
-			Console.Read();
+			UserInterfaceModule UIModule = (UserInterfaceModule)getModuleByName ("UI");
+			getModuleByName ("post receiver").setEnabled (true);
 		}
 
 		/// <summary>
@@ -67,8 +66,10 @@ namespace HFYBot
 		/// <summary>
 		/// Loads the core modules. Other modules can be dynamically loaded later
 		/// </summary>
-		static void LoadCoreModules(){
-			Modules.Add(new PostReceiverModule(reddit, defaultSubreddit));
+		static void LoadCoreModules()
+		{
+			modules.Add(new UserInterfaceModule ());
+			modules.Add(new PostReceiverModule(reddit, defaultSubreddit));
 		}
 
 		/// <summary>
@@ -76,11 +77,26 @@ namespace HFYBot
 		/// </summary>
 		/// <returns>The maned module.</returns>
 		/// <param name="name">Name of the module.</param>
-		public static RedditModule getModuleByName(string name){
-			foreach (RedditModule module in Modules) {
+		public static RedditModule getModuleByName(string name)
+		{
+			foreach (RedditModule module in modules) {
 				if(module.name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
 				   return module;
 			}
+		}
+
+		/// <summary>
+		/// Gets the names of all modules.
+		/// </summary>
+		/// <returns>The module names.</returns>
+		public static string[] getModuleNames()
+		{
+			modules.TrimExcess();
+			string[] names = new string[modules.Count];
+			for(int i = 0; i++; i<modules.Count){
+				names [i] = modules [i].name;
+			}
+			return names;
 		}
 	}
 }

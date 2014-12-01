@@ -43,7 +43,8 @@ namespace HFYBot
 	/// <summary>
 	/// Enum representing the state of the module.
 	/// </summary>
-	public enum ModuleState{
+	public enum ModuleState
+	{
 		/// <summary>
 		/// Representing the module being both enabled and running.
 		/// </summary>

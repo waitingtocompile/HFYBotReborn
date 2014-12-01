@@ -36,7 +36,8 @@ namespace HFYBot.Modules
 		/// Make a pass through a number of new posts
 		/// </summary>
 		/// <param name="postCount">The number of posts to check</param>
-		void MakePass(int postCount){
+		void MakePass(int postCount)
+		{
 
 			//TODO: Optimise post recieveing code. 
 			try{
@@ -71,7 +72,8 @@ namespace HFYBot.Modules
 		/// </summary>
 		/// <returns>The comment text.</returns>
 		/// <param name="user">User to generate text for.</param>
-		string generateCommentText(RedditUser user){
+		string generateCommentText(RedditUser user)
+		{
 			int count = 0;
 			List<Post> availiblePosts = new List<Post>(0);
 			foreach (Post post in user.Posts) {
@@ -103,7 +105,8 @@ namespace HFYBot.Modules
 		/// </summary>
 		/// <returns><c>true</c>, if is OC, <c>false</c> otherwise.</returns>
 		/// <param name="post">Post to check</param>
-		bool isOC(Post post){
+		bool isOC(Post post)
+		{
 			return (post.Title.ToUpperInvariant().Contains("[OC]")|post.LinkFlairText.ToUpperInvariant().Equals("OC"));
 		}
 
@@ -111,7 +114,8 @@ namespace HFYBot.Modules
 		/// Checks if post has been processed
 		/// </summary>
 		/// <param name="post">Post to check</param>
-		bool processed(Post post){
+		bool processed(Post post)
+		{
 			foreach (Comment com in post.Comments) {
 				if (com.Author.Equals (reddit.User.Name))
 					return true;
@@ -152,7 +156,8 @@ namespace HFYBot.Modules
 		/// Sets whether the module is enabled. Will wait until the current pass is finished.
 		/// </summary>
 		/// <param name="b">Intended state.</param>
-		public override void setEnabled(bool b){
+		public override void setEnabled(bool b)
+		{
 			if (!b && state.Equals (ModuleState.Idle)) {
 				thread.Abort ();
 				enabled = false;
