@@ -41,7 +41,7 @@ namespace HFYBot
 			//UserInterfaceModule UIModule = (UserInterfaceModule)getModuleByName ("UI");
 			getModuleByName ("post receiver").setEnabled (true);
 			getModuleByName ("UI").setEnabled (true); 
-			while (true)
+			while (true) //Ugly placeholder to prevent the program exiting while I poke it.
 				Thread.Sleep (10000000);
 		}
 

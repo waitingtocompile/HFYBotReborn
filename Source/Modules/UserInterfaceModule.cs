@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 using HFYBot.Modules.UI;
 
+//TODO:general fixing and finishing.
+
 namespace HFYBot.Modules
 {
 	/// <summary>
@@ -12,9 +14,14 @@ namespace HFYBot.Modules
 	/// </summary>
 	public class UserInterfaceModule:Module
 	{
-
+		/// <summary>
+		/// The display thread.
+		/// </summary>
 		Thread displayThread;
 
+		/// <summary>
+		/// The 'stack' of menus. It functions not unlike a program stack, a menu can add a new element to the bottom of the stack, which will become the active menu. Alternitaively the bottom menu can be removed and the next menu up becomes active. The top element, the main menu, cannot be removed, so don't try. Please, you will break things
+		/// </summary>
 		List<UIMenu> activeMenus = new List<UIMenu> (0);
 
 		MainMenu mainMenu;
@@ -25,6 +32,10 @@ namespace HFYBot.Modules
 			mainMenu = new MainMenu (this);
 		}
 
+		/// <summary>
+		/// Adds the menu to the bottom of the 'stack', displays it's text and feeds all data input into it.
+		/// </summary>
+		/// <param name="menu">Menu.</param>
 		public void MakeMenuTransition(UIMenu menu){
 			if (menu != null) {
 				activeMenus.Add (menu);
@@ -34,6 +45,9 @@ namespace HFYBot.Modules
 				MenuStepBack ();
 		}
 
+		/// <summary>
+		/// Removes the final menu from the 'stack' and then transitions to the next menu up.
+		/// </summary>
 		public void MenuStepBack(){
 			if (activeMenus.Count == 1)
 				return;
@@ -60,6 +74,7 @@ namespace HFYBot.Modules
 
 		private void run()
 		{
+			//TODO: All of the UI run code. I am the worst kind of person.
 			Console.ReadKey();
 		}
 

@@ -3,6 +3,9 @@ using System;
 
 namespace HFYBot.Modules.UI
 {
+	/// <summary>
+	/// The main menu. exactly what it sounds like. Think of it like a gatekeeper.
+	/// </summary>
 	public class MainMenu:UIMenu
 	{
 		public MainMenu (HFYBot.Modules.UserInterfaceModule module):base(module)

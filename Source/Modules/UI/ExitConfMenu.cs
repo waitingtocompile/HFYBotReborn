@@ -2,6 +2,9 @@ using System;
 
 namespace HFYBot.Modules.UI
 {
+	/// <summary>
+	/// Exit confirmation menu. This is the menu that made me question whether it was worth the memory overhead of this system.
+	/// </summary>
 	public class ExitConfMenu:UIMenu
 	{
 		public ExitConfMenu (UserInterfaceModule module):base(module)
