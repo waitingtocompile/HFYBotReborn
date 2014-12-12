@@ -50,9 +50,17 @@
     <Compile Include="Source\Modules\PostReceiverModule.cs" />
     <Compile Include="Source\Module.cs" />
     <Compile Include="Source\Modules\UserInterfaceModule.cs" />
+    <Compile Include="Source\Modules\UI\UIMenu.cs" />
+    <Compile Include="Source\Modules\UI\MainMenu.cs" />
+    <Compile Include="Source\Modules\UI\ExitConfMenu.cs" />
+    <Compile Include="Source\Modules\UI\LazyMan.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Source\Modules\" />
+    <Folder Include="Source\Modules\UI\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Modules\UI\MainMenu.txt" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using RedditSharp;
 
+using System.Threading;
+
 using HFYBot.Modules;
 
 namespace HFYBot
@@ -21,7 +23,7 @@ namespace HFYBot
 		/// <summary>
 		/// All modules should be in this list. There are many planned methods that are not yet implemented 
 		/// </summary>
-		static List<RedditModule> modules = new List<RedditModule>();
+		static List<Module> modules = new List<Module>();
 
 		/// <summary>
 		/// The instance of the Reddit API that the bot uses. Individual modules can (in theory) have their own though will generally use this.
@@ -36,8 +38,11 @@ namespace HFYBot
 		{
 			reddit = LogIn();
 			LoadCoreModules();
-			UserInterfaceModule UIModule = (UserInterfaceModule)getModuleByName ("UI");
+			//UserInterfaceModule UIModule = (UserInterfaceModule)getModuleByName ("UI");
 			getModuleByName ("post receiver").setEnabled (true);
+			getModuleByName ("UI").setEnabled (true); 
+			while (true)
+				Thread.Sleep (10000000);
 		}
 
 		/// <summary>
@@ -68,8 +73,8 @@ namespace HFYBot
 		/// </summary>
 		static void LoadCoreModules()
 		{
-			modules.Add(new UserInterfaceModule ());
-			modules.Add(new PostReceiverModule(reddit, defaultSubreddit));
+			modules.Add((Module)new UserInterfaceModule ());
+			modules.Add((Module)new PostReceiverModule(reddit, reddit.GetSubreddit(defaultSubreddit)));
 		}
 
 		/// <summary>
@@ -77,12 +82,13 @@ namespace HFYBot
 		/// </summary>
 		/// <returns>The maned module.</returns>
 		/// <param name="name">Name of the module.</param>
-		public static RedditModule getModuleByName(string name)
+		public static Module getModuleByName(string name)
 		{
-			foreach (RedditModule module in modules) {
+			foreach (Module module in modules) {
 				if(module.name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
 				   return module;
 			}
+			return null;
 		}
 
 		/// <summary>
@@ -93,8 +99,8 @@ namespace HFYBot
 		{
 			modules.TrimExcess();
 			string[] names = new string[modules.Count];
-			for(int i = 0; i++; i<modules.Count){
-				names [i] = modules [i].name;
+			for(int i = 0; i < modules.Count; i++){
+				names [i] = modules[i].name;
 			}
 			return names;
 		}
