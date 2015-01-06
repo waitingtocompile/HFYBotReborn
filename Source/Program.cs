@@ -13,12 +13,12 @@ namespace HFYBot
 		/// <summary>
 		/// The version of the program to be displayed to users and the general public.
 		/// </summary>
-		public const string version = "2.0 experimental";
+		public const string version = "2.0";
 
 		/// <summary>
 		/// The default subreddit the bot will use when acessing reddit. Some modules may use a different subreddit.
 		/// </summary>
-		public const string defaultSubreddit = "/r/bottest";
+		public const string defaultSubreddit = "/r/HFY";
 
 		/// <summary>
 		/// All modules should be in this list. There are many planned methods that are not yet implemented 
