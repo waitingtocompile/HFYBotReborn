@@ -1,12 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Modules/UserInterfaceModule.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Program.cs">
     <Files>
-      <File FileName="Source/Program.cs" Line="1" Column="1" />
+      <File FileName="Source/Program.cs" Line="44" Column="83" />
       <File FileName="Source/RedditModule.cs" Line="1" Column="1" />
       <File FileName="Source/Modules/PostReceiverModule.cs" Line="1" Column="1" />
       <File FileName="Source/Module.cs" Line="1" Column="1" />
-      <File FileName="Source/Modules/UserInterfaceModule.cs" Line="29" Column="25" />
+      <File FileName="Source/Modules/UserInterfaceModule.cs" Line="8" Column="37" />
+      <File FileName="Source/Modules/UI/UIMenu.cs" Line="33" Column="3" />
+      <File FileName="Source/Modules/UI/MainMenu.cs" Line="7" Column="80" />
     </Files>
     <Pads>
       <Pad Id="ClassPad">

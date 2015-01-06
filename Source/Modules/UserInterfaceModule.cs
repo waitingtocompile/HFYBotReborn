@@ -3,6 +3,8 @@ using System.Threading;
 using System.Deployment;
 using System.Collections.Generic;
 
+using System.Diagnostics;
+
 using HFYBot.Modules.UI;
 
 //TODO:general fixing and finishing.
@@ -30,6 +32,7 @@ namespace HFYBot.Modules
 		{
 			Console.CursorVisible = false;
 			mainMenu = new MainMenu (this);
+			displayThread = new Thread(new ThreadStart(run));
 		}
 
 		/// <summary>
@@ -60,22 +63,32 @@ namespace HFYBot.Modules
 		public override void setEnabled(bool b)
 		{
 			if (!b) {
+
 				Console.Clear ();
-				Console.Write ("Waiting for all modules to stop...");
+				Console.WriteLine ("Waiting for all modules to stop...");
 				//TODO: actually wait for modules to stop
-				Console.Write ("All modules have stopped. Press any key to exit...");
+				Console.WriteLine ("All modules have stopped. Press any key to exit...");
 				Console.Read ();
 				Environment.Exit (0);
 			} else if (!enabled) {
+				state = ModuleState.Enabled;
+				enabled = true;
 				MakeMenuTransition (mainMenu);
-				displayThread = new Thread(new ThreadStart(run));
+				displayThread.Start ();
 			}
 		}
 
 		private void run()
 		{
-			//TODO: All of the UI run code. I am the worst kind of person.
-			Console.ReadKey();
+			mainMenu.updateText ();
+			while (enabled) {
+				ConsoleKey key = Console.ReadKey (true).Key;
+				if (key.Equals (ConsoleKey.Escape)) {
+					MenuStepBack ();
+				} else {
+					activeMenus [activeMenus.Count - 1].receiveKey (key);
+				}
+			}
 		}
 
 		public static string ModuleStateToString(ModuleState state)
