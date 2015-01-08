@@ -18,7 +18,11 @@ namespace HFYBot
 		/// <summary>
 		/// The default subreddit the bot will use when acessing reddit. Some modules may use a different subreddit.
 		/// </summary>
+		#if DEBUG
+		public const string defaultSubreddit = "/r/Bottest";
+		#else
 		public const string defaultSubreddit = "/r/HFY";
+		#endif
 
 		/// <summary>
 		/// All modules should be in this list. There are many planned methods that are not yet implemented 

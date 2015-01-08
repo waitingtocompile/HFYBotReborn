@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using RedditSharp;
 using RedditSharp.Things;
 
+#if DEBUG
+using System.Diagnostics;
+#endif
+
 namespace HFYBot.Modules
 {
 	/// <summary>
@@ -75,19 +79,29 @@ namespace HFYBot.Modules
 		string generateCommentText(RedditUser user)
 		{
 			int count = 0;
+			Listing<Post> allPosts = user.GetPosts(Sort.New);
 			List<Post> availiblePosts = new List<Post>(0);
-			foreach (Post post in user.Posts) {
-				if (post.Subreddit.Equals (sub) && isOC (post)) {
+			foreach (Post post in allPosts) {
+				#if DEBUG
+				Debug.Write("post " + post.Title ", " + post.Subreddit);
+				#endif
+				if (post.Subreddit.Equals (sub.Name) && isOC (post)) {
+					#if DEBUG
+					Debug.WriteLine(" Included");
+					#endif
+					count++;
 					if (availiblePosts.Count < 25)
 						availiblePosts.Add (post);
-					count++;
 				}
+				#if DEBUG
+				else Debug.Write("\n");
+				#endif
 			}
 
 			string comm;
 
-			if (count > 1) {
-				comm = "There are " + count.ToString () + " stories by [u/" + user.Name + "](http://reddit.com/u/" + user.Name + ") Including:";
+			if (availiblePosts.Count > 1) {
+				comm = "There are " + availiblePosts.Count.ToString () + " stories by [u/" + user.Name + "](http://reddit.com/u/" + user.Name + ") Including:";
 				foreach (Post p in availiblePosts) {
 					comm += "\n\n* [" + p.Title + "](" + p.Url + ")";
 				}
