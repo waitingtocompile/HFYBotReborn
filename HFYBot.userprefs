@@ -1,14 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Source/Modules/PostReceiverModule.cs">
     <Files>
-      <File FileName="Source/Program.cs" Line="49" Column="49" />
+      <File FileName="Source/Program.cs" Line="8" Column="8" />
       <File FileName="Source/RedditModule.cs" Line="1" Column="1" />
-      <File FileName="Source/Modules/PostReceiverModule.cs" Line="30" Column="30" />
+      <File FileName="Source/Modules/PostReceiverModule.cs" Line="39" Column="39" />
       <File FileName="Source/Module.cs" Line="1" Column="1" />
-      <File FileName="Source/Modules/UserInterfaceModule.cs" Line="5" Column="5" />
-      <File FileName="Source/Modules/UI/UIMenu.cs" Line="3" Column="3" />
+      <File FileName="Source/Modules/UserInterfaceModule.cs" Line="1" Column="1" />
+      <File FileName="Source/Modules/UI/UIMenu.cs" Line="1" Column="1" />
       <File FileName="Source/Modules/UI/MainMenu.cs" Line="1" Column="1" />
+      <File FileName="Source/ConsoleHelper.cs" Line="11" Column="11" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

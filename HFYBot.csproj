@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1161782B-EFE8-46F3-8301-CB3B7756BD5D}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -59,8 +59,5 @@
   <ItemGroup>
     <Folder Include="Source\Modules\" />
     <Folder Include="Source\Modules\UI\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source\Modules\UI\MainMenu.txt" />
   </ItemGroup>
 </Project>

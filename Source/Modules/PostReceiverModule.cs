@@ -101,7 +101,7 @@ namespace HFYBot.Modules
 			string comm;
 
 			if (availiblePosts.Count > 1) {
-				comm = "There are " + availiblePosts.Count.ToString () + " stories by [u/" + user.Name + "](http://reddit.com/u/" + user.Name + ") Including:";
+				comm = "There are " + count + " stories by [u/" + user.Name + "](http://reddit.com/u/" + user.Name + ") Including:";
 				foreach (Post p in availiblePosts) {
 					comm += "\n\n* [" + p.Title + "](" + p.Url + ")";
 				}
