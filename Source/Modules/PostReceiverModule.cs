@@ -83,7 +83,7 @@ namespace HFYBot.Modules
 			List<Post> availiblePosts = new List<Post>(0);
 			foreach (Post post in allPosts) {
 				#if DEBUG
-				Debug.Write("post " + post.Title ", " + post.Subreddit);
+				Debug.Write("post " + post.Title + ", " + post.Subreddit);
 				#endif
 				if (post.Subreddit.Equals (sub.Name) && isOC (post)) {
 					#if DEBUG
@@ -169,7 +169,7 @@ namespace HFYBot.Modules
 				}
 			}
 			if(state != ModuleState.Crashed)
-				state = ModuleState.Diabled;
+				state = ModuleState.Disabled;
 		}
 
 		/// <summary>

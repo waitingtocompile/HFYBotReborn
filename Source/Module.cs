@@ -30,7 +30,7 @@ namespace HFYBot
 		public Module (string name)
 		{
 			this.name = name;
-			state = ModuleState.Diabled;
+			state = ModuleState.Disabled;
 		}
 
 		/// <summary>

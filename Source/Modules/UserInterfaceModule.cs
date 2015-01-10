@@ -96,7 +96,7 @@ namespace HFYBot.Modules
 			switch (state) {
 			case(ModuleState.Crashed):
 				return "Crashed";
-			case(ModuleState.Diabled):
+			case(ModuleState.Disabled):
 				return "Disabled";
 			case(ModuleState.Enabled):
 				return "Enabled";
