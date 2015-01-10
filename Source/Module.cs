@@ -56,7 +56,7 @@ namespace HFYBot
 		/// <summary>
 		/// Representing the module has been disabled and will not respond to external input.
 		/// </summary>
-		Diabled,
+		Disabled,
 		/// <summary>
 		/// Representing the module has failed in some way, and should be restarted. Some modules may atempt to restart themselves.
 		/// </summary>
