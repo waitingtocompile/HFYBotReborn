@@ -41,7 +41,7 @@ namespace HFYBot.Modules
 		/// Make a pass through a number of new posts
 		/// </summary>
 		/// <param name="postCount">The number of posts to check</param>
-		void MakePass(int postCount)
+		bool MakePass(int postCount)
 		{
 
 			//TODO: Optimise post recieveing code. 
@@ -68,8 +68,10 @@ namespace HFYBot.Modules
 				}
 
 			} catch (System.Net.WebException) {
-				state = ModuleState.Crashed;
+				return false;
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -124,9 +126,9 @@ namespace HFYBot.Modules
 		{
 			if (post.Equals (null))
 				return false;
-			if (post.Title.ToUpperInvariant ().Contains ("[OC]"))
+			if (post.Title.ToUpperInvariant ().Contains ("[OC]") | post.Title.ToUpperInvariant ().Contains ("[PI]"))
 				return true;
-			if (!string.IsNullOrEmpty (post.LinkFlairText) && post.LinkFlairText.ToUpperInvariant ().Equals ("OC"))
+			if (!string.IsNullOrEmpty (post.LinkFlairText) && post.LinkFlairText.ToUpperInvariant ().Equals ("OC") | post.LinkFlairText.ToUpperInvariant ().Equals ("OC"))
 				return true;
 			return false;
 		}
@@ -150,27 +152,47 @@ namespace HFYBot.Modules
 		void run()
 		{
 			state = ModuleState.Enabled;
-			MakePass(40);
+			moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Enabled });
+			if(!MakePass(40)) enterRecoveryMode(40);
 			while (enabled) {
 				state = ModuleState.Idle;
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Idle });
 				Thread.Sleep (waitTime);
 				state = ModuleState.Enabled;
-				MakePass(5);
-				if (state.Equals (ModuleState.Crashed)) {
-					Thread.Sleep (10000);
-					state = ModuleState.Enabled;
-					MakePass(5);
-					if (state.Equals (ModuleState.Crashed)) {
-						Thread.Sleep (120000);
-						state = ModuleState.Enabled;
-						MakePass(5);
-						if(state.Equals(ModuleState.Crashed))
-						   break;
-					}
-				}
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Enabled });
+				if(!MakePass(5)) enterRecoveryMode(5);
 			}
-			if(state != ModuleState.Crashed)
+			if (state != ModuleState.Crashed) {
 				state = ModuleState.Disabled;
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Disabled });
+			}
+		}
+
+		void enterRecoveryMode(int postAmount){
+			if (MakePass (postAmount))
+				return;
+			state = ModuleState.Crashed;
+			moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Crashed });
+			for (int i = 0; i < 5; i++) {
+				Thread.Sleep (300000);
+				state = ModuleState.Enabled;
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Enabled });
+				if (MakePass (postAmount)) {
+					return;
+				}
+				state = ModuleState.Crashed;
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Crashed });
+			}
+			for (;;) {
+				Thread.Sleep (3600000);
+				state = ModuleState.Enabled;
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Enabled });
+				if (MakePass (postAmount)) {
+					return;
+				}
+				state = ModuleState.Crashed;
+				moduleManager.BroadcastMessageAsync (MessageType.ModuleStateChange, new Object[2]{ this, ModuleState.Crashed });
+			}
 		}
 
 		/// <summary>

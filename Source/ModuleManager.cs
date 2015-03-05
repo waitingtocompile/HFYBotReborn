@@ -38,21 +38,22 @@ namespace HFYBot
 		/// Loads and starts the core modules required form the start. 
 		/// </summary>
 		public void startInitalModules(){
-			modules.Add(new PostReceiverModule(RedditAPI, defaultSubreddit));
+			modules.Add(new PostReceiverModule(RedditAPI, RedditAPI.GetSubreddit(defaultSubreddit)));
 			modules.Add (new UserInterfaceModule ());
+			foreach (Module module in modules)
+				module.setEnabled (true);
 		}
 
 		/// <summary>
-		/// Broadcasts a message to all other modules. This is an asyncronous process, so plan accordingly
+		/// Broadcasts a message to all other modules. This would be asyncronous, but I am lazy. Alos async programming is hard.
 		/// </summary>
-		/// <returns>The message.</returns>
 		/// <param name="messageType">The type of message being sent</param>
 		/// <param name="messgaeData">Data associated with the message</param>
-		public async Task BroadcastMessage(MessageType messageType, Object[] messageData){
+		public void BroadcastMessageAsync(MessageType messageType, Object[] messageData){
 			modules.TrimExcess ();
 			foreach (Module module in modules) {
-				if (Array.Exists (module.permittedMessgaeTypes, messageType)) {
-					module.RecieveMessage (MessageType, messageData);
+				if (Array.Exists (module.permittedMessgaeTypes, x => messageType.Equals(x))) {
+					module.RecieveMessage (messageType, messageData);
 				}
 			}
 		}
@@ -78,7 +79,7 @@ namespace HFYBot
 	/// <summary>
 	/// The type of message being sent. messgae types prefixed with an "R" refer to events in the reddit API. This message should imply the type of data being sent.
 	/// </summary>
-	enum MessageType{
+	public enum MessageType{
 		ModuleStateChange, //For when a module state changes. Should be used for logging purposes as well as the UI
 		RPostFound, //For when a new post is received via the API.
 		RMailRecieved, //For when a new mail is received wia the reddit API
