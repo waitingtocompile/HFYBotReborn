@@ -33,6 +33,7 @@ namespace HFYBot.Modules
 			Console.CursorVisible = false;
 			mainMenu = new MainMenu (this);
 			displayThread = new Thread(new ThreadStart(run));
+			permittedMessgaeTypes = new MessageType[1] {MessageType.ModuleStateChange};
 		}
 
 		/// <summary>
@@ -104,6 +105,13 @@ namespace HFYBot.Modules
 				return "Idle";
 			default:
 				return "Unknown";
+			}
+		}
+
+		public override void RecieveMessage (MessageType messageType, object[] messageData)
+		{
+			if(messageType.Equals(MessageType.ModuleStateChange)){
+				activeMenus[activeMenus.Count -1].updateText();
 			}
 		}
 	}

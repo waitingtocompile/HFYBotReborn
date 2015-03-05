@@ -1,4 +1,5 @@
 using System;
+using HFYBot;
 
 namespace HFYBot
 {
@@ -8,6 +9,8 @@ namespace HFYBot
 	public abstract class Module
 	{
 		public static ModuleManager moduleManager;
+
+		public MessageType[] permittedMessgaeTypes{ get; protected set;}
 
 		/// <summary>
 		/// The name of the module used when reffering to that module internally.
@@ -40,6 +43,13 @@ namespace HFYBot
 		/// </summary>
 		/// <param name="b">The intended state of the module.</param>
 		public abstract void setEnabled(bool b);
+
+		/// <summary>
+		/// Called by the ModuleManager when when a sutiable messgae has been broadcast.
+		/// </summary>
+		/// <param name="messageType">The type of message being sent</param>
+		/// <param name="messgaeData">Data associated with the message</param>
+		public abstract void RecieveMessage(MessageType messageType, Object[] messageData);
 	}
 
 	/// <summary>

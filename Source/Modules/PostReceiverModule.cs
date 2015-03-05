@@ -34,6 +34,7 @@ namespace HFYBot.Modules
 		public PostReceiverModule (Reddit reddit, Subreddit sub) :base("post receiver", reddit, sub)
 		{
 			thread = new Thread(new ThreadStart(run));
+			permittedMessgaeTypes = new MessageType[0];
 		}
 
 		/// <summary>
@@ -185,6 +186,11 @@ namespace HFYBot.Modules
 				enabled = b;
 				thread.Start ();
 			}
+		}
+
+		public override void RecieveMessage (MessageType messageType, object[] messageData)
+		{
+			return; //needs not respond to messages, since it will receive none.
 		}
 	}
 }

@@ -48,8 +48,13 @@ namespace HFYBot
 		/// <returns>The message.</returns>
 		/// <param name="messageType">The type of message being sent</param>
 		/// <param name="messgaeData">Data associated with the message</param>
-		public async Task BroadcastMessage(MessageType messageType, Object[] messgaeData){
-			//TODO: Implement messgae broadcasting.
+		public async Task BroadcastMessage(MessageType messageType, Object[] messageData){
+			modules.TrimExcess ();
+			foreach (Module module in modules) {
+				if (Array.Exists (module.permittedMessgaeTypes, messageType)) {
+					module.RecieveMessage (MessageType, messageData);
+				}
+			}
 		}
 
 		/// <summary>
