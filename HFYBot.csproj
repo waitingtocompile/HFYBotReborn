@@ -54,6 +54,7 @@
     <Compile Include="Source\Modules\UI\MainMenu.cs" />
     <Compile Include="Source\Modules\UI\ExitConfMenu.cs" />
     <Compile Include="Source\Modules\UI\LazyMan.cs" />
+    <Compile Include="Source\ModuleManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
