@@ -7,6 +7,8 @@ namespace HFYBot
 	/// </summary>
 	public abstract class Module
 	{
+		public static ModuleManager moduleManager;
+
 		/// <summary>
 		/// The name of the module used when reffering to that module internally.
 		/// </summary>

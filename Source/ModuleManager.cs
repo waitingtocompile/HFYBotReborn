@@ -1,13 +1,51 @@
 ﻿using System;
 using System.Threading.Tasks;
+using RedditSharp;
+using System.Collections.Generic;
+
+using HFYBot.Modules;
 
 namespace HFYBot
 {
-	public static class ModuleManager
+	public class ModuleManager
 	{
-		public static async Task BroadcastMessage(MessageType Message, Object messgaeData){
+		/// <summary>
+		/// Shared instance of the Reddit API. 
+		/// </summary>
+		public Reddit RedditAPI;
+
+		/// <summary>
+		/// The default subreddit the bot will use when acessing reddit. Some modules may use a different subreddit.
+		/// </summary>
+		#if DEBUG
+		public const string defaultSubreddit = "/r/Bottest";
+		#else
+		public const string defaultSubreddit = "/r/HFY";
+		#endif
+
+		/// <summary>
+		/// All modules should be in this list.
+		/// </summary>
+		static List<Module> modules = new List<Module>();
+
+		public ModuleManager(Reddit reddit){
+			Module.moduleManager = this;
+			RedditAPI = reddit;
+			startInitalModules ();
+		}
+
+		/// <summary>
+		/// Loads and starts the core modules required form the start. 
+		/// </summary>
+		public void startInitalModules(){
+			modules.Add(new PostReceiverModule(RedditAPI, defaultSubreddit));
+			modules.Add (new UserInterfaceModule ());
+		}
+
+		public async Task BroadcastMessage(MessageType Message, Object messgaeData){
 
 		}
+
 
 	}
 
