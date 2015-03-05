@@ -42,8 +42,29 @@ namespace HFYBot
 			modules.Add (new UserInterfaceModule ());
 		}
 
-		public async Task BroadcastMessage(MessageType Message, Object messgaeData){
+		/// <summary>
+		/// Broadcasts a message to all other modules. This is an asyncronous process, so plan accordingly
+		/// </summary>
+		/// <returns>The message.</returns>
+		/// <param name="messageType">The type of message being sent</param>
+		/// <param name="messgaeData">Data associated with the message</param>
+		public async Task BroadcastMessage(MessageType messageType, Object[] messgaeData){
+			//TODO: Implement messgae broadcasting.
+		}
 
+		/// <summary>
+		/// Generate some UI text for looking nice
+		/// </summary>
+		/// <returns>The text to be displayed.</returns>
+		public string getUIText(){
+			string returnText = "";
+
+			modules.TrimExcess ();
+			foreach (Module module in modules) {
+				returnText += "[" + UserInterfaceModule.ModuleStateToString (module.state) + "] " + module.name + "\n";
+			}
+
+			return returnText;
 		}
 
 
@@ -57,6 +78,5 @@ namespace HFYBot
 		RPostFound, //For when a new post is received via the API.
 		RMailRecieved, //For when a new mail is received wia the reddit API
 		MassEditRequired, //For when an event has occured requireing a new mass edit on a specified user.
-
 	}
 }
