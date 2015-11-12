@@ -1,0 +1,1 @@
+These libriares are either 2.0 or 3.5 compatable versions; don't try to use 4.0 versions on XP
