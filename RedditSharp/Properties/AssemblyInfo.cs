@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HFYBotReborn")]
+[assembly: AssemblyTitle("RedditSharp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HFYBotReborn")]
+[assembly: AssemblyProduct("RedditSharp")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("440ab724-12f4-4f33-8498-a84343daf5fa")]
+[assembly: Guid("a625a48f-afb7-4ae9-b89d-f372f5376b12")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HFYBotReborn", "HFYBotReborn.csproj", "{D79CB6A3-C377-4E2C-98F8-0DD0D2AE2E8E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3613C6B-A92D-4CE4-8D9B-7434CDD21649} = {A3613C6B-A92D-4CE4-8D9B-7434CDD21649}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditSharp", "RedditSharp\RedditSharp.csproj", "{A3613C6B-A92D-4CE4-8D9B-7434CDD21649}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D79CB6A3-C377-4E2C-98F8-0DD0D2AE2E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D79CB6A3-C377-4E2C-98F8-0DD0D2AE2E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D79CB6A3-C377-4E2C-98F8-0DD0D2AE2E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D79CB6A3-C377-4E2C-98F8-0DD0D2AE2E8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3613C6B-A92D-4CE4-8D9B-7434CDD21649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3613C6B-A92D-4CE4-8D9B-7434CDD21649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3613C6B-A92D-4CE4-8D9B-7434CDD21649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3613C6B-A92D-4CE4-8D9B-7434CDD21649}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
