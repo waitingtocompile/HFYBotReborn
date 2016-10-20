@@ -12,7 +12,7 @@ namespace HFYBot
       /// <summary>
       /// The version of the program to be displayed to users and the general public.
       /// </summary>
-      public const string version = "2.1";
+      public const string version = "2.12";
 
       /// <summary>
       /// The instance of the Reddit API that the bot uses.
@@ -28,22 +28,24 @@ namespace HFYBot
       /// <param name="args">The command-line arguments.</param>
       public static void Main(string[] args)
       {
-         //-user HFYBot -pass password -sub HFY -maxcount 500
+         try
+         {
+            //-user HFYBot -pass password -sub HFY -maxcount 500
 
-         string username = "";
-         string password = "";
-         string subname = "HFY"; // GetSubreddit will remove /r/ from the front anyways. Lowercase doesn't matter
-         int maxCount=500;
-         int maxDays = 60;
-         bool fastcutoff = false;
-         bool reallypost = false;
-         bool verbose = false;
-         bool quiet = false;
-         bool showhelp = false;
-         string oAuthClientID = "";
-         string oAuthClientSecret = "";
+            string username = "";
+            string password = "";
+            string subname = "HFY"; // GetSubreddit will remove /r/ from the front anyways. Lowercase doesn't matter
+            int maxCount = 500;
+            int maxDays = 60;
+            bool fastcutoff = false;
+            bool reallypost = false;
+            bool verbose = false;
+            bool quiet = false;
+            bool showhelp = false;
+            string oAuthClientID = "";
+            string oAuthClientSecret = "";
 
-         var optsParse = new NDesk.Options.OptionSet()
+            var optsParse = new NDesk.Options.OptionSet()
          {
             {"user=", "{username} of the account to run this bot under (required).", v => {if (v != null) username=v;} },
             {"pass=", "{password} for the account to run this bot under (required).", v => {if (v != null) password=v;} },
@@ -59,117 +61,123 @@ namespace HFYBot
             {"h|help", "show this help.", v => { if (v != null) showhelp=true; }  },
          };
 
-         try
-         {
-            List<string> leftovers = optsParse.Parse(args);
-         }
-         catch (NDesk.Options.OptionException e)
-         {
-            Console.WriteLine(e.Message);
-            Console.WriteLine("Try 'hfybot --help' for more information.");
-            return;
-         }
-
-         if (showhelp)
-         {
-            optsParse.WriteOptionDescriptions(Console.Out);
-            return;
-         }
-
-         if (username == "" || password == "")
-         {
-            Console.WriteLine("Username and password must be supplied.");
-            System.Environment.Exit(0);
-         }
-
-         if (subname == "")
-         {
-            Console.WriteLine("Subbedit name must be supplied.");
-            System.Environment.Exit(0);
-         }
-
-         if (maxCount < 1 || maxCount > 500)
-            maxCount = 500;   // enforce default
-
-         if (maxDays < 1 || maxDays > 90)
-            maxDays = 60;   // enforce default
-
-         if (verbose)
-            quiet = false;
-
-         if (oAuthClientID != "" && oAuthClientSecret != "")
-         {
-            // Log in via oauth (which still requires the username and password, but also a secondary username and password called a client id and secret)
-            if (!quiet)
-               Console.WriteLine("Logging in user {0} via OAUTH2 protocol...", username);
-
             try
             {
-               authProvider = new AuthProvider(oAuthClientID, oAuthClientSecret, "http://reddit.com");
-               authTokenString = authProvider.GetOAuthToken(username, password);
-               if (authTokenString == "")
+               List<string> leftovers = optsParse.Parse(args);
+            }
+            catch (NDesk.Options.OptionException e)
+            {
+               Console.WriteLine(e.Message);
+               Console.WriteLine("Try 'hfybot --help' for more information.");
+               return;
+            }
+
+            if (showhelp)
+            {
+               optsParse.WriteOptionDescriptions(Console.Out);
+               return;
+            }
+
+            if (username == "" || password == "")
+            {
+               Console.WriteLine("Username and password must be supplied.");
+               System.Environment.Exit(0);
+            }
+
+            if (subname == "")
+            {
+               Console.WriteLine("Subbedit name must be supplied.");
+               System.Environment.Exit(0);
+            }
+
+            if (maxCount < 1 || maxCount > 500)
+               maxCount = 500;   // enforce default
+
+            if (maxDays < 1 || maxDays > 90)
+               maxDays = 60;   // enforce default
+
+            if (verbose)
+               quiet = false;
+
+            if (oAuthClientID != "" && oAuthClientSecret != "")
+            {
+               // Log in via oauth (which still requires the username and password, but also a secondary username and password called a client id and secret)
+               if (!quiet)
+                  Console.WriteLine("Logging in user {0} via OAUTH2 protocol...", username);
+
+               try
                {
-                  Console.WriteLine("Login for user {0} (user:{1}) refused, empty token returned.", oAuthClientID, username);
+                  authProvider = new AuthProvider(oAuthClientID, oAuthClientSecret, "http://reddit.com");
+                  authTokenString = authProvider.GetOAuthToken(username, password);
+                  if (authTokenString == "")
+                  {
+                     Console.WriteLine("Login for user {0} (user:{1}) refused, empty token returned.", oAuthClientID, username);
+                     System.Environment.Exit(0);
+                  }
+                  if (verbose)
+                     Console.WriteLine("Auth token is {0}", authTokenString);
+                  reddit = new Reddit(authTokenString);
+               }
+               catch (System.Security.Authentication.AuthenticationException)
+               {
+                  Console.WriteLine("Login for user {0} (user:{1}) refused.", oAuthClientID, username);
                   System.Environment.Exit(0);
                }
-               if (verbose)
-                  Console.WriteLine("Auth token is {0}", authTokenString);
-               reddit = new Reddit(authTokenString);
+               catch (System.Net.WebException we)
+               {
+                  Console.WriteLine("Network error when connecting to reddit. Please check your connection. {0}",we.ToString());
+                  System.Environment.Exit(0);
+               }
             }
-            catch (System.Security.Authentication.AuthenticationException)
+            else
             {
-               Console.WriteLine("Login for user {0} (user:{1}) refused.", oAuthClientID, username);
-               System.Environment.Exit(0);
+               // Log in without oauth in a traditional mode.
+               if (!quiet)
+                  Console.WriteLine("Logging in user {0}...", username);
+
+               try
+               {
+                  reddit = new Reddit(username, password);
+               }
+               catch (System.Security.Authentication.AuthenticationException)
+               {
+                  Console.WriteLine("Login for user {0} refused.", username);
+                  System.Environment.Exit(0);
+               }
+               catch (System.Net.WebException we)
+               {
+                  Console.WriteLine("Network error when connecting to reddit. Please check your connection. {0}",we.ToString());
+                  System.Environment.Exit(0);
+               }
             }
-            catch (System.Net.WebException)
-            {
-               Console.WriteLine("Network error when connecting to reddit. Please check your connection.");
-               System.Environment.Exit(0);
-            }
-         }
-         else
-         {
-            // Log in without oauth in a traditional mode.
+
+            reddit.RateLimit = WebAgent.RateLimitMode.Burst;
+
             if (!quiet)
-               Console.WriteLine("Logging in user {0}...", username);
+               Console.WriteLine("Login successful. Getting sub {0}...", subname);
 
-            try
+            RedditSharp.Things.Subreddit subit = reddit.GetSubreddit(subname);
+            if (subit == null)
             {
-               reddit = new Reddit(username, password);
-            }
-            catch (System.Security.Authentication.AuthenticationException)
-            {
-               Console.WriteLine("Login for user {0} refused.", username);
+               Console.WriteLine("Subbedit {0} does not exist.", subname);
                System.Environment.Exit(0);
             }
-            catch (System.Net.WebException)
+
+            if (!quiet)
             {
-               Console.WriteLine("Network error when connecting to reddit. Please check your connection.");
-               System.Environment.Exit(0);
+               Console.WriteLine("Processing posts and creating new comments as needed (maxcount={0}, maxdays={1}).", maxCount, maxDays);
+               if (!reallypost)
+                  Console.WriteLine("NOTE: running in TEST mode only, will not actually make comments.");
             }
+
+            ProcessNewPosts prm = new ProcessNewPosts(reddit, subit);
+            prm.Run(maxCount, maxDays, fastcutoff, reallypost, verbose);
          }
-         
-         reddit.RateLimit = WebAgent.RateLimitMode.Burst;
-
-         if (!quiet)
-            Console.WriteLine("Login successful. Getting sub {0}...", subname);
-
-         RedditSharp.Things.Subreddit subit = reddit.GetSubreddit(subname);
-         if (subit==null)
+         catch (Exception e)
          {
-            Console.WriteLine("Subbedit {0} does not exist.", subname);
+            Console.WriteLine("General exception: {0}", e.ToString());
             System.Environment.Exit(0);
          }
-
-         if (!quiet)
-         {
-            Console.WriteLine("Processing posts and creating new comments as needed (maxcount={0}, maxdays={1}).", maxCount, maxDays);
-            if (!reallypost)
-               Console.WriteLine("NOTE: running in TEST mode only, will not actually make comments.");
-         }
-
-         ProcessNewPosts prm = new ProcessNewPosts(reddit, subit);
-         prm.Run(maxCount, maxDays, fastcutoff, reallypost, verbose);
       }
    }
 }
