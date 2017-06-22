@@ -222,9 +222,14 @@ namespace HFYBot
             }
          }
 
-         if (count > 1)
+         if (count > 25)
          {
-            string leadin = "There are " + count + " stories by " + authorLink(username) + ", including:\n";
+            string leadin = "There are many stories by " + authorLink(username) + ", including:\n";
+            comm = leadin + comm;
+         }
+         else if (count > 1)
+         {
+            string leadin = "There are at least " + count + " stories by " + authorLink(username) + ", including:\n";
             comm = leadin + comm;
          }
          else
