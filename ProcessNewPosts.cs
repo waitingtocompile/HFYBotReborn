@@ -243,6 +243,11 @@ namespace HFYBot
          return comm;
       }
 
+      string escapeName(string username)
+      {
+         return username.Replace("_", @"\_").Replace("~", @"\~").Replace("*", @"\*").Replace("^", @"\^");
+      }
+
       string authorLink(string username)
       {
          // check if there is a wiki for the author.
@@ -260,16 +265,16 @@ namespace HFYBot
          }
 
          if (wikiContent=="")
-            return "[" + username + "](https://reddit.com/u/" + username + ")";
+            return "[" + escapeName(username) + "](https://reddit.com/u/" + username + ")";
          else
          {
-            return "[" + username + "](https://reddit.com/u/" + username + ") ([Wiki](https://www.reddit.com/r/" + sub.Name + "/wiki/authors/" + username + "))";
+            return "[" + escapeName(username) + "](https://reddit.com/u/" + username + ") ([Wiki](https://www.reddit.com/r/" + sub.Name + "/wiki/authors/" + username + "))";
          }
       }
 
       string botmailLink(string username)
       {
-         return "[" + username+ "](https://www.reddit.com/message/compose?to=" + username + "&subject=HFYBot&message=)";
+         return "[" + escapeName(username) + "](https://www.reddit.com/message/compose?to=" + username + "&subject=HFYBot&message=)";
       }
 
       /// <summary>

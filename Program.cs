@@ -12,7 +12,7 @@ namespace HFYBot
       /// <summary>
       /// The version of the program to be displayed to users and the general public.
       /// </summary>
-      public const string version = "2.12";
+      public const string version = "2.13";
 
       /// <summary>
       /// The instance of the Reddit API that the bot uses.
