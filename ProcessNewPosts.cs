@@ -51,7 +51,7 @@ namespace HFYBot
          DateTime mostRecentlyMadeCommentDT = new DateTime();  // if the -fastcutoff flag is passed, then this is used. Note that if the bot fails or the network drops during processing, then this will cause older posts to be missed.
          DateTime maxAgeToLook = DateTime.Now.AddDays(-maxAgeInDays);
 
-         const int maxBotCommentsToBuffer = 10000;
+         const int maxBotCommentsToBuffer = 1000;
 
          try
          {
